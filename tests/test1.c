@@ -1,16 +1,27 @@
+#include <unity.h>
 #include "emulator.h"
-#include <stdio.h>
-
-int main() {
-    // Perform a test: check if add function works correctly
-    int result = add(2, 2);
-
-    // Check the result and return accordingly
-    if (result == 4) {
-        printf("Test passed.\n");
-        return 0; // Return 0 for success
-    } else {
-        printf("Test failed: Expected 4, got %d.\n", result);
-        return 1; // Return non-zero for failure
+void setUp (void) {}
+void tearDown (void) {}
+void test_emulator_init(void) {
+    Emulator emulator;
+    init_emulator(&emulator);
+    TEST_ASSERT_EQUAL(0, emulator.a_register);
+    TEST_ASSERT_EQUAL(0, emulator.b_register);
+    TEST_ASSERT_EQUAL(0, emulator.tmp_register);
+    TEST_ASSERT_EQUAL(0, emulator.stack_pointer);
+    TEST_ASSERT_EQUAL(0, emulator.program_counter);
+    for (unsigned int i = 0; i < sizeof(emulator.memory); i++) {
+        TEST_ASSERT_EQUAL(0, emulator.memory[i]);
     }
+    for (unsigned int i = 0; i < sizeof(emulator.stack); i++) {
+        TEST_ASSERT_EQUAL(0, emulator.stack[i]);
+    }
+}
+
+int main(void) {
+    UNITY_BEGIN();
+
+    RUN_TEST(test_emulator_init);
+
+    return UNITY_END();
 }

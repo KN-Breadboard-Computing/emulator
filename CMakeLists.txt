@@ -26,6 +26,8 @@ endif()
 
 include(FetchContent)
 
+add_subdirectory(external)
+
 add_subdirectory(src)
 
 add_subdirectory(cli_app)

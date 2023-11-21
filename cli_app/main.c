@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include "emulator.h"
 
-int main() {
-    printf("%d\n", add(5,10));
+int main(void) {
+    Emulator emulator;
+    init_emulator(&emulator);
+
+    printf("%lu", sizeof(emulator.memory));
     return 0;
 }
