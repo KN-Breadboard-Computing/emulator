@@ -3,8 +3,8 @@
 #include "emulator.h"
 
 void print_emulator_status(Emulator *emulator) {
-    printf("A: %u\n", emulator->a_register);
-    printf("B: %u\n", emulator->b_register);
+    printf("A: signed: %d unsigned: %u\n", emulator->signed_a_register,emulator->a_register);
+    printf("B: signed: %d unsigned: %u\n", emulator->signed_b_register,emulator->b_register);
     printf("tmp: %u\n", emulator->tmp_register);
     printf("pc: %u\n", emulator->program_counter);
     printf("sp: %u\n", emulator->stack_pointer);
@@ -28,8 +28,16 @@ const uint8_t ROM[] = {
         0b11111110, // SKIP (in emulator acts as print REG_A)
         0b00000001, // MOVAB
         0b00011010, // ADDA
+        0b11111110, // SKIP
         0b00011010, // ADDA
+        0b11111110, // SKIP
         0b00011010, // ADDA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
         0b11111110, // SKIP (in emulator acts as print REG_A)
         0b11111111, // HALT
 };
@@ -37,7 +45,6 @@ const uint8_t ROM[] = {
 int main(void) {
     Emulator emulator;
     init_emulator(&emulator);
-
     for (uint32_t i = 0; i < sizeof ROM; ++i) {
         emulator.memory[i] = ROM[i];
     }

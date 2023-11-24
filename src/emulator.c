@@ -1,5 +1,6 @@
 #include "emulator.h"
 #include <stdio.h>
+#include <stdbool.h>
 
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
@@ -39,6 +40,8 @@ Instruction decode_instruction(uint8_t instruction_bytecode) {
             return HALT;
         case 0b00011010:
             return ADDA;
+        case 0b00011101:
+            return SUBABA;
         case 0b11111110:
             return SKIP;
         default:
@@ -48,7 +51,7 @@ Instruction decode_instruction(uint8_t instruction_bytecode) {
 }
 
 //TODO: add overflow flag
-void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after) {
+static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after,bool is_sub) {
     //sign flag
     if (after >> 7 == 1)
         emulator->flag_register |= 0b10000000;
@@ -61,10 +64,14 @@ void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after) {
     //carry flag
     if (after < before)
         emulator->flag_register |= 0b00010000;
+    //overflow flag
+    if ((is_sub == false && (uint8_t)(after+128) < (uint8_t)(before+128)) || (is_sub == true && (uint8_t)(after+128) > (uint8_t)(before+128)))
+        emulator->flag_register |= 0b00001000;
 }
 
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
+    uint8_t temp;
     switch (instruction) {
         case MOVAB:
             emulator->clock_cycles_counter += 3;
@@ -94,14 +101,21 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         case ADDA:
             emulator->flag_register = 0;
             emulator->clock_cycles_counter += 4;
-            uint8_t temp = emulator->a_register;
+            temp = emulator->a_register;
             emulator->a_register += emulator->b_register;
-            calculate_flags(emulator, temp, emulator->a_register);
+            calculate_flags(emulator, temp, emulator->a_register,0);
+            break;
+        case SUBABA:
+            emulator->flag_register = 0;
+            emulator->clock_cycles_counter += 4;
+            temp = emulator->a_register;
+            emulator->a_register -= emulator->b_register;
+            calculate_flags(emulator, temp, emulator->a_register,1);
             break;
             //useless in physical computer used for debug printing Register A
         case SKIP:
             emulator->clock_cycles_counter += 2;
-            printf("SKIP: %d\n", emulator->a_register);
+            printf("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register,emulator->a_register);
             break;
         default:
             emulator->clock_cycles_counter += 1;

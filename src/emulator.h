@@ -1,9 +1,9 @@
 #pragma once
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
+#define STACK_SIZE 65536
+#define MEMORY_SIZE 65536
 typedef enum {
     MOVAB,
     MOVBA,
@@ -119,16 +119,23 @@ typedef enum {
 } Instruction;
 
 typedef struct {
-    uint8_t a_register;
-    uint8_t b_register;
+    //nwm czy to top 10 eleganckich rozwiazan te unie
+    union {
+        uint8_t a_register;
+        int8_t signed_a_register;
+    };
+    union {
+        uint8_t b_register;
+        int8_t signed_b_register;
+    };
     uint8_t flag_register;
     uint16_t tmp_register;
     uint16_t stack_pointer;
     uint16_t program_counter;
     bool is_halted;
 
-    uint8_t memory[65536];
-    uint8_t stack[65536];
+    uint8_t memory[MEMORY_SIZE];
+    uint8_t stack[STACK_SIZE];
 
     //for debug purposes
     uint32_t instruction_counter;
@@ -140,4 +147,6 @@ void init_emulator(Emulator *emulator);
 int run_next_emulator_instruction(Emulator *emulator);
 
 int run_instruction(Emulator *emulator, Instruction instruction);
+
+Instruction decode_instruction(uint8_t instruction_bytecode);
 
