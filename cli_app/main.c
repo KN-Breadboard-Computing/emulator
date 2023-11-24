@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include "emulator.h"
 
+
 void print_emulator_status(Emulator *emulator) {
     printf("A: signed: %d unsigned: %u\n", emulator->signed_a_register,emulator->a_register);
     printf("B: signed: %d unsigned: %u\n", emulator->signed_b_register,emulator->b_register);
@@ -44,14 +45,17 @@ const uint8_t ROM[] = {
 
 int main(void) {
     Emulator emulator;
+    Config config;
+    load_config_temp(&config);
+    print_config(&config);
     init_emulator(&emulator);
     for (uint32_t i = 0; i < sizeof ROM; ++i) {
         emulator.memory[i] = ROM[i];
     }
-    while (emulator.is_halted == 0) {
-        run_next_emulator_instruction(&emulator);
+    while (emulator.is_halted == 0&&emulator.program_counter<sizeof ROM) {
+       run_next_emulator_instruction(&emulator,&config);
     }
     print_emulator_status(&emulator);
-
+    cleanup_config(&config);
     return 0;
 }

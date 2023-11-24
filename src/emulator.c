@@ -1,6 +1,10 @@
 #include "emulator.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+#include "config.h"
+
+
 
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
@@ -22,36 +26,10 @@ void init_emulator(Emulator *emulator) {
     }
 }
 
-//TODO: decode instruction depending on config file
-Instruction decode_instruction(uint8_t instruction_bytecode) {
 
-    switch (instruction_bytecode) {
-        case 0b00000000:
-            return NOP;
-        case 0b00000001:
-            return MOVAB;
-        case 0b00000010:
-            return MOVBA;
-        case 0b00001101:
-            return MOVAIMM;
-        case 0b00001110:
-            return MOVBIMM;
-        case 0b11111111:
-            return HALT;
-        case 0b00011010:
-            return ADDA;
-        case 0b00011101:
-            return SUBABA;
-        case 0b11111110:
-            return SKIP;
-        default:
-            return NOP;
 
-    }
-}
-
-//TODO: add overflow flag
 static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after,bool is_sub) {
+    emulator->flag_register = 0;
     //sign flag
     if (after >> 7 == 1)
         emulator->flag_register |= 0b10000000;
@@ -72,7 +50,39 @@ static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after,bo
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
     uint8_t temp;
-    switch (instruction) {
+    printf("\nrunning instruction: %s\n",instruction.mnemonic);
+    printf("operands: ");
+    for (int i = 0; i < instruction.num_operands; i++) {
+        printf("%s ",instruction.operands[i]);
+    }
+    if(strcmp(instruction.mnemonic,"MOV")==0){
+    }
+    else if(strcmp(instruction.mnemonic,"NOP")==0){
+        emulator->clock_cycles_counter += 3;
+    }
+    else if(strcmp(instruction.mnemonic,"MOVIMM")==0){
+        emulator->program_counter++;
+    }
+    else if(strcmp(instruction.mnemonic,"HALT")==0){
+        emulator->clock_cycles_counter += 2;
+        emulator->is_halted = 1;
+    }
+    else if(strcmp(instruction.mnemonic,"ADD")==0){
+
+    }
+    else if(strcmp(instruction.mnemonic,"SUB")==0){
+
+    }
+    else if(strcmp(instruction.mnemonic,"SKIP")==0){
+        emulator->clock_cycles_counter += 2;
+        printf("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register,emulator->a_register);
+    }
+    else {
+        printf("not implemented yet :<<\n");
+        emulator->program_counter+=instruction.num_operands;
+        return 1;
+    }
+   /* switch (instruction) {
         case MOVAB:
             emulator->clock_cycles_counter += 3;
             emulator->b_register = emulator->a_register;
@@ -99,14 +109,12 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
             emulator->is_halted = 1;
             break;
         case ADDA:
-            emulator->flag_register = 0;
             emulator->clock_cycles_counter += 4;
             temp = emulator->a_register;
             emulator->a_register += emulator->b_register;
             calculate_flags(emulator, temp, emulator->a_register,0);
             break;
         case SUBABA:
-            emulator->flag_register = 0;
             emulator->clock_cycles_counter += 4;
             temp = emulator->a_register;
             emulator->a_register -= emulator->b_register;
@@ -121,7 +129,7 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
             emulator->clock_cycles_counter += 1;
             printf("not implemented yet :<<\n");
             return 1;
-    }
+    }*/
     return 0;
 }
 
@@ -129,8 +137,8 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
  * 1 - ERR
  * 2 - HLT
  */
-int run_next_emulator_instruction(Emulator *emulator) {
-    Instruction instruction = decode_instruction(emulator->memory[emulator->program_counter]);
+int run_next_emulator_instruction(Emulator *emulator,Config *config) {
+    Instruction instruction = *config->instructions[emulator->memory[emulator->program_counter]];
     if (emulator->is_halted)
         return 2;
     emulator->program_counter++;

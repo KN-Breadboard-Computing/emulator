@@ -5,7 +5,7 @@
 typedef struct {
     char* mnemonic;
     char** operands;
-    int num_operands;
+    unsigned num_operands;
 } Instruction;
 
 typedef struct {
@@ -17,6 +17,8 @@ typedef struct {
  * 1 - file not found
  */
 int load_config(Config* config, char* filename);
+int load_config_temp(Config* config);
+int print_config(Config* config);
 void cleanup_config(Config* config);
 
 Instruction* get_instruction(Config* config, char* mnemonic);
