@@ -1,13 +1,13 @@
 #pragma once
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "config.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
 
 typedef struct {
-    //nwm czy to top 10 eleganckich rozwiazan te unie
+    // nwm czy to top 10 eleganckich rozwiazan te unie
     union {
         uint8_t a_register;
         int8_t signed_a_register;
@@ -25,15 +25,13 @@ typedef struct {
     uint8_t memory[MEMORY_SIZE];
     uint8_t stack[STACK_SIZE];
 
-    //for debug purposes
+    // for debug purposes
     uint32_t instruction_counter;
     uint32_t clock_cycles_counter;
 } Emulator;
 
 void init_emulator(Emulator *emulator);
 
-int run_next_emulator_instruction(Emulator *emulator,Config *config);
+int run_next_emulator_instruction(Emulator *emulator, Config *config);
 
 int run_instruction(Emulator *emulator, Instruction instruction);
-
-

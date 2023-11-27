@@ -1,7 +1,7 @@
-#include <unity.h>
 #include "emulator.h"
-void setUp (void) {}
-void tearDown (void) {}
+#include <unity.h>
+void setUp(void) {}
+void tearDown(void) {}
 void test_emulator_init(void) {
     Emulator emulator;
     init_emulator(&emulator);
