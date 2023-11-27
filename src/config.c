@@ -81,7 +81,7 @@ int load_config_temp(Config* config) {
     config->instructions[0b00011101]->operands[1] = (char *)malloc(sizeof(char) * 2);
     strcpy(config->instructions[0b00011101]->operands[1], "B");
     config->instructions[0b00011101]->operands[2] = (char *)malloc(sizeof(char) * 2);
-    strcpy(config->instructions[0b00011101]->operands[2], "B");
+    strcpy(config->instructions[0b00011101]->operands[2], "A");
 
     return 0;
 }

@@ -27,7 +27,7 @@ const uint8_t ROM[] = {
         0b00000001,
         0b00011010, // ADDA
         0b11111110, // SKIP (in emulator acts as print REG_A)
-        0b00000001, // MOVAB
+        0b00000010, // MOVBA
         0b00011010, // ADDA
         0b11111110, // SKIP
         0b00011010, // ADDA
@@ -52,6 +52,7 @@ int main(void) {
     for (uint32_t i = 0; i < sizeof ROM; ++i) {
         emulator.memory[i] = ROM[i];
     }
+    emulator.a_register=11;
     while (emulator.is_halted == 0&&emulator.program_counter<sizeof ROM) {
        run_next_emulator_instruction(&emulator,&config);
     }
