@@ -1,0 +1,29 @@
+name: Clang-Format Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Clang-Format
+      run: sudo apt-get install clang-format
+
+    - name: Run Formatting Script
+      run: bash scripts/format.sh
+
+    - name: Check for changes
+      run: |
+        git diff
+        if ! git diff --quiet; then
+          echo "Code style issues found"
+          exit 1
+        fi
+
