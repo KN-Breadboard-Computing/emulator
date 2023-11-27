@@ -1,8 +1,10 @@
 #pragma once
+
 #include "config.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
 

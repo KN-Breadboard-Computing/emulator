@@ -1,8 +1,9 @@
 #include "emulator.h"
-#include "config.h"
-#include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
+#include "config.h"
+
 
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
@@ -39,25 +40,25 @@ static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, b
     if (after < before)
         emulator->flag_register |= 0b00010000;
     // overflow flag
-    if ((is_sub == false && (uint8_t)(after + 128) < (uint8_t)(before + 128)) ||
-        (is_sub == true && (uint8_t)(after + 128) > (uint8_t)(before + 128)))
+    if ((is_sub == false && (uint8_t) (after + 128) < (uint8_t) (before + 128)) ||
+        (is_sub == true && (uint8_t) (after + 128) > (uint8_t) (before + 128)))
         emulator->flag_register |= 0b00001000;
 }
 
 uint8_t *fetch_next_byte(Emulator *emulator) { return &emulator->memory[emulator->program_counter++]; }
 
-uint8_t *decode_operand(Emulator *emulator, const char *operand) {
-    if (strcmp(operand, "A") == 0) {
+void *decode_operand(Emulator *emulator, const char *operand) {
+    if (!strcmp(operand, "A")) {
         return &emulator->a_register;
-    } else if (strcmp(operand, "B") == 0) {
+    } else if (!strcmp(operand, "B")) {
         return &emulator->b_register;
-    } else if (strcmp(operand, "CONST") == 0) {
+    } else if (!strcmp(operand, "CONST")) {
         return fetch_next_byte(emulator);
     }
     return NULL;
 }
 
-int mov(uint8_t *destination, uint8_t *source) {
+int mov(uint8_t *destination, const uint8_t *source) {
     *destination = *source;
     return 0;
 }
@@ -82,6 +83,7 @@ int handle_mov(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_add(Emulator *emulator, Instruction instruction) {
+    emulator->clock_cycles_counter += 4;
     if (instruction.num_operands != 1) {
         return 1;
     }
@@ -89,33 +91,53 @@ int handle_add(Emulator *emulator, Instruction instruction) {
     if (destination == NULL) {
         return 2;
     }
+    uint8_t before = *destination;
     *destination = emulator->a_register + emulator->b_register;
-    // TODO: Calculate flags
-    // calculate_flags(emulator, temp, *destination, 0);
+    calculate_flags(emulator, before, *destination, 0);
+    return 0;
+}
+
+int handle_sub(Emulator *emulator, Instruction instruction) {
+    emulator->clock_cycles_counter += 4;
+    if (instruction.num_operands != 3) {
+        return 1;
+    }
+    uint8_t *minuend = decode_operand(emulator, instruction.operands[0]);
+    uint8_t *subtrahend = decode_operand(emulator, instruction.operands[1]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[2]);
+    if (destination == NULL) {
+        return 2;
+    }
+    uint8_t before = *minuend;
+    *destination = *minuend - *subtrahend;
+    calculate_flags(emulator, before, *destination, 1);
     return 0;
 }
 
 // TODO: Add error handling
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
-    uint8_t temp;
+
+#if DEBUG
     printf("\nrunning instruction: %s\n", instruction.mnemonic);
     printf("operands: ");
     for (int i = 0; i < instruction.num_operands; i++) {
         printf("%s ", instruction.operands[i]);
     }
+#endif
+
     if (strcmp(instruction.mnemonic, "MOV") == 0) {
         handle_mov(emulator, instruction);
     } else if (strcmp(instruction.mnemonic, "NOP") == 0) {
         emulator->clock_cycles_counter += 3;
-    } else if (strcmp(instruction.mnemonic, "HALT") == 0) {
+    } else if (!strcmp(instruction.mnemonic, "HALT")) {
         emulator->clock_cycles_counter += 2;
         emulator->is_halted = 1;
-    } else if (strcmp(instruction.mnemonic, "ADD") == 0) {
+    } else if (!strcmp(instruction.mnemonic, "ADD")) {
         handle_add(emulator, instruction);
-    } else if (strcmp(instruction.mnemonic, "SUB") == 0) {
-
-    } else if (strcmp(instruction.mnemonic, "SKIP") == 0) {
+    } else if (!strcmp(instruction.mnemonic, "SUB")) {
+        handle_sub(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "SKIP")) {
         emulator->clock_cycles_counter += 2;
         printf("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {
@@ -123,54 +145,6 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         emulator->program_counter += instruction.num_operands;
         return 1;
     }
-    /* switch (instruction) {
-         case MOVAB:
-             emulator->clock_cycles_counter += 3;
-             emulator->b_register = emulator->a_register;
-             break;
-         case MOVBA:
-             emulator->clock_cycles_counter += 3;
-             emulator->a_register = emulator->b_register;
-             break;
-         case NOP:
-             emulator->clock_cycles_counter += 3;
-             break;
-         case MOVAIMM:
-             emulator->clock_cycles_counter += 4;
-             emulator->a_register = emulator->memory[emulator->program_counter];
-             emulator->program_counter++;
-             break;
-         case MOVBIMM:
-             emulator->clock_cycles_counter += 4;
-             emulator->b_register = emulator->memory[emulator->program_counter];
-             emulator->program_counter++;
-             break;
-         case HALT:
-             emulator->clock_cycles_counter += 2;
-             emulator->is_halted = 1;
-             break;
-         case ADDA:
-             emulator->clock_cycles_counter += 4;
-             temp = emulator->a_register;
-             emulator->a_register += emulator->b_register;
-             calculate_flags(emulator, temp, emulator->a_register,0);
-             break;
-         case SUBABA:
-             emulator->clock_cycles_counter += 4;
-             temp = emulator->a_register;
-             emulator->a_register -= emulator->b_register;
-             calculate_flags(emulator, temp, emulator->a_register,1);
-             break;
-             //useless in physical computer used for debug printing Register A
-         case SKIP:
-             emulator->clock_cycles_counter += 2;
-             printf("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register,emulator->a_register);
-             break;
-         default:
-             emulator->clock_cycles_counter += 1;
-             printf("not implemented yet :<<\n");
-             return 1;
-     }*/
     return 0;
 }
 
@@ -185,3 +159,4 @@ int run_next_emulator_instruction(Emulator *emulator, Config *config) {
     emulator->program_counter++;
     return run_instruction(emulator, instruction);
 }
+
