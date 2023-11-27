@@ -1,6 +1,7 @@
-#include "emulator.h"
-#include <ncurses.h>
 #include <stdio.h>
+#include <ncurses.h>
+#include "emulator.h"
+
 
 void print_emulator_status(Emulator *emulator) {
     printf("A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
@@ -19,29 +20,29 @@ void print_emulator_status(Emulator *emulator) {
 }
 
 const uint8_t ROM[] = {
-    0b00001101, // MOVAIMM 1
-    0b00000001,
-    0b00001110, // MOVBIMM 67
-    0b01000011,
-    0b00011010, // ADDA
-    0b00001110, // MOVBIMM 1
-    0b00000001,
-    0b00011010, // ADDA
-    0b11111110, // SKIP (in emulator acts as print REG_A)
-    0b00000001, // MOVAB
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP (in emulator acts as print REG_A)
-    0b11111111, // HALT
+        0b00001101, // MOVAIMM 1
+        0b00000001,
+        0b00001110, // MOVBIMM 67
+        0b01000011,
+        0b00011010, // ADDA
+        0b00001110, // MOVBIMM 1
+        0b00000001,
+        0b00011010, // ADDA
+        0b11111110, // SKIP (in emulator acts as print REG_A)
+        0b00000010, // MOVBA
+        0b00011010, // ADDA
+        0b11111110, // SKIP
+        0b00011010, // ADDA
+        0b11111110, // SKIP
+        0b00011010, // ADDA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
+        0b11111110, // SKIP
+        0b00011101, // SUBABA
+        0b11111110, // SKIP (in emulator acts as print REG_A)
+        0b11111111, // HALT
 };
 
 int main(void) {
