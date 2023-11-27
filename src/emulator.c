@@ -44,16 +44,14 @@ static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, b
         emulator->flag_register |= 0b00001000;
 }
 
-uint8_t* fetch_next_byte(Emulator* emulator) {
-    return &emulator->memory[emulator->program_counter++];
-}
+uint8_t *fetch_next_byte(Emulator *emulator) { return &emulator->memory[emulator->program_counter++]; }
 
-uint8_t* decode_operand(Emulator* emulator, const char* operand) {
-    if(strcmp(operand, "A") == 0) {
+uint8_t *decode_operand(Emulator *emulator, const char *operand) {
+    if (strcmp(operand, "A") == 0) {
         return &emulator->a_register;
-    } else if(strcmp(operand, "B") == 0) {
+    } else if (strcmp(operand, "B") == 0) {
         return &emulator->b_register;
-    } else if(strcmp(operand, "CONST") == 0) {
+    } else if (strcmp(operand, "CONST") == 0) {
         return fetch_next_byte(emulator);
     }
     return NULL;
@@ -68,19 +66,33 @@ int mov(uint8_t *destination, uint8_t *source) {
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
-int handle_mov(Emulator* emulator, Instruction instruction) {
-    if(instruction.num_operands != 2) {
+int handle_mov(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 2) {
         return 1;
     }
 
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t *source = decode_operand(emulator, instruction.operands[1]);
 
-    if(destination == NULL || source == NULL) {
+    if (destination == NULL || source == NULL) {
         return 2;
     }
 
     return mov(destination, source);
+}
+
+int handle_add(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1) {
+        return 1;
+    }
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    if (destination == NULL) {
+        return 2;
+    }
+    *destination = emulator->a_register + emulator->b_register;
+    // TODO: Calculate flags
+    // calculate_flags(emulator, temp, *destination, 0);
+    return 0;
 }
 
 // TODO: Add error handling
@@ -96,13 +108,11 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_mov(emulator, instruction);
     } else if (strcmp(instruction.mnemonic, "NOP") == 0) {
         emulator->clock_cycles_counter += 3;
-    } else if (strcmp(instruction.mnemonic, "MOVIMM") == 0) {
-        emulator->program_counter++;
     } else if (strcmp(instruction.mnemonic, "HALT") == 0) {
         emulator->clock_cycles_counter += 2;
         emulator->is_halted = 1;
     } else if (strcmp(instruction.mnemonic, "ADD") == 0) {
-
+        handle_add(emulator, instruction);
     } else if (strcmp(instruction.mnemonic, "SUB") == 0) {
 
     } else if (strcmp(instruction.mnemonic, "SKIP") == 0) {
