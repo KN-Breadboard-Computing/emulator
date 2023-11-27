@@ -49,7 +49,9 @@ int main(void) {
     Emulator emulator;
     Config config;
     load_config_temp(&config);
+#if DEBUG
     print_config(&config);
+#endif
     init_emulator(&emulator);
     for (uint32_t i = 0; i < sizeof ROM; ++i) {
         emulator.memory[i] = ROM[i];
