@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create Build Directory
+      run: mkdir build
+
+    - name: Change to Build Directory
+      run: cd build
+
+    - name: Configure CMake
+      run: cmake ..
+
+    - name: Build
+      run: cmake --build .
+
+    - name: Run Tests
+      run: ctest
