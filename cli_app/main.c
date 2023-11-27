@@ -52,7 +52,6 @@ int main(void) {
     for (uint32_t i = 0; i < sizeof ROM; ++i) {
         emulator.memory[i] = ROM[i];
     }
-    emulator.a_register=11;
     while (emulator.is_halted == 0&&emulator.program_counter<sizeof ROM) {
        run_next_emulator_instruction(&emulator,&config);
     }
