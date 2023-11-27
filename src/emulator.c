@@ -1,9 +1,8 @@
 #include "emulator.h"
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
 #include "config.h"
-
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
@@ -40,8 +39,8 @@ static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, b
     if (after < before)
         emulator->flag_register |= 0b00010000;
     // overflow flag
-    if ((is_sub == false && (uint8_t) (after + 128) < (uint8_t) (before + 128)) ||
-        (is_sub == true && (uint8_t) (after + 128) > (uint8_t) (before + 128)))
+    if ((is_sub == false && (uint8_t)(after + 128) < (uint8_t)(before + 128)) ||
+        (is_sub == true && (uint8_t)(after + 128) > (uint8_t)(before + 128)))
         emulator->flag_register |= 0b00001000;
 }
 
@@ -159,4 +158,3 @@ int run_next_emulator_instruction(Emulator *emulator, Config *config) {
     emulator->program_counter++;
     return run_instruction(emulator, instruction);
 }
-
