@@ -150,27 +150,6 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         emulator->program_counter += instruction.num_operands;
         return 1;
     }
-   /* switch (instruction) {
-
-
-
-
-
-        case ADDA:
-            emulator->clock_cycles_counter += 4;
-            temp = emulator->a_register;
-            emulator->a_register += emulator->b_register;
-            calculate_flags(emulator, temp, emulator->a_register,0);
-            break;
-        case SUBABA:
-            emulator->clock_cycles_counter += 4;
-            temp = emulator->a_register;
-            emulator->a_register -= emulator->b_register;
-            calculate_flags(emulator, temp, emulator->a_register,1);
-            break;
-            //useless in physical computer used for debug printing Register A
-
-    }*/
     return 0;
 }
 
