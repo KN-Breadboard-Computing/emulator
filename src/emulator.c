@@ -57,59 +57,42 @@ void *decode_operand(Emulator *emulator, const char *operand) {
     return NULL;
 }
 
-int mov(uint8_t *destination, const uint8_t *source) {
-    *destination = *source;
-    return 0;
-}
-
 // TODO: Increment clock_cycles_counter
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
 int handle_mov(Emulator *emulator, Instruction instruction) {
-    if (instruction.num_operands != 2) {
-        return 1;
-    }
-
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t *source = decode_operand(emulator, instruction.operands[1]);
 
-    if (destination == NULL || source == NULL) {
-        return 2;
-    }
+    *destination = *source;
 
-    return mov(destination, source);
+    return 0;
 }
 
 int handle_add(Emulator *emulator, Instruction instruction) {
     emulator->clock_cycles_counter += 4;
-    if (instruction.num_operands != 1) {
-        return 1;
-    }
+
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    if (destination == NULL) {
-        return 2;
-    }
     uint8_t before = *destination;
+
     *destination = emulator->a_register + emulator->b_register;
     calculate_flags(emulator, before, *destination, 0);
+
     return 0;
 }
 
 int handle_sub(Emulator *emulator, Instruction instruction) {
     emulator->clock_cycles_counter += 4;
-    if (instruction.num_operands != 3) {
-        return 1;
-    }
+
     uint8_t *minuend = decode_operand(emulator, instruction.operands[0]);
     uint8_t *subtrahend = decode_operand(emulator, instruction.operands[1]);
     uint8_t *destination = decode_operand(emulator, instruction.operands[2]);
-    if (destination == NULL) {
-        return 2;
-    }
     uint8_t before = *minuend;
+
     *destination = *minuend - *subtrahend;
     calculate_flags(emulator, before, *destination, 1);
+
     return 0;
 }
 

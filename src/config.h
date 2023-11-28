@@ -5,6 +5,7 @@
 typedef struct {
     char *mnemonic;
     char **operands;
+    unsigned cycle_count;
     unsigned num_operands;
 } Instruction;
 
