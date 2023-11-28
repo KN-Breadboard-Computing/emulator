@@ -22,17 +22,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 endif()
 
-
-include(CheckCCompilerFlag)
 option(ENABLE_CUSTOM_COMPILER_FLAGS "Enables custom compiler flags" ON)
 if (ENABLE_CUSTOM_COMPILER_FLAGS)
     if (("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang") OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU"))
         list(APPEND custom_compiler_flags
-            -std=c89
-            -pedantic
             -Wall
             -Wextra
-            -Werror
             -Wstrict-prototypes
             -Wwrite-strings
             -Wshadow
@@ -45,13 +40,11 @@ if (ENABLE_CUSTOM_COMPILER_FLAGS)
             -Wswitch-default
             -Wconversion
             -fstack-protector-strong
-            -Wcomma
             -Wdouble-promotion
             -Wparentheses
             -Wformat-overflow
             -Wunused-macros
-            -Wmissing-variable-declarations
-            -Wused-but-marked-unused
+            -Wmissing-declarations
             -Wswitch-enum
         )
     elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
@@ -91,17 +84,10 @@ if (ENABLE_SAFE_STACK)
         )
 endif()
 
-# FIXME: Figure out why -fsanitize=address is not accepted by CheckCCompilerFlag
-# apply custom compiler flags
 foreach(compiler_flag ${custom_compiler_flags})
-    #remove problematic characters
     string(REGEX REPLACE "[^a-zA-Z0-9=\-]" "" current_variable ${compiler_flag})
-
-    CHECK_C_COMPILER_FLAG(${compiler_flag} "FLAG_SUPPORTED_${current_variable}")
-    if (FLAG_SUPPORTED_${current_variable})
-        list(APPEND supported_compiler_flags)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${compiler_flag}")
-    endif()
+    list(APPEND supported_compiler_flags)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${compiler_flag}")
 endforeach()
 
 include(FetchContent)
