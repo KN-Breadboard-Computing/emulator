@@ -47,7 +47,8 @@ const uint8_t ROM[] = {
 int main(void) {
     Emulator emulator;
     Config config;
-    load_config_temp(&config);
+    const char* const filename = "instructions.json";
+    load_config(&config, filename);
 #if DEBUG
     print_config(&config);
 #endif
