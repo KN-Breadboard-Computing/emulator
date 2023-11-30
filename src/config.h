@@ -17,7 +17,7 @@ typedef struct {
  * 0 - 0K
  * 1 - file not found
  */
-int load_config(Config *config, char *filename);
+int load_config(Config *config, const char* const filename);
 
 int load_config_temp(Config *config);
 

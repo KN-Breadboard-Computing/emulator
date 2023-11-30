@@ -5,6 +5,8 @@ add_library(EmulatorLib emulator.c config.c)
 find_package(Curses REQUIRED)
 target_link_libraries(EmulatorLib ${CURSES_LIBRARIES})
 include_directories(${CURSES_INCLUDE_DIR})
+target_link_libraries(EmulatorLib cJSON)
+
 # Make sure the compiler can find include files for our library
 # when other libraries or executables link to YourLib
 target_include_directories(EmulatorLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

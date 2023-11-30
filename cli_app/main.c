@@ -224,6 +224,8 @@ int main(void) {
     //emulator setup
     Emulator emulator;
     Config config;
+    const char* const filename = "instructions.json";
+    load_config(&config, filename);
     //log_func = &handle_log;
     load_config_temp(&config);
     init_emulator(&emulator);
