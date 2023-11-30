@@ -110,8 +110,7 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
 
     if (!strcmp(instruction.mnemonic, "MOV")) {
         handle_mov(emulator, instruction);
-    }
-    else if (!strcmp(instruction.mnemonic, "NOP")) {
+    } else if (!strcmp(instruction.mnemonic, "NOP")) {
         emulator->clock_cycles_counter += 3;
     } else if (!strcmp(instruction.mnemonic, "HALT")) {
         emulator->clock_cycles_counter += 2;

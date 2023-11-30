@@ -1,8 +1,8 @@
 #include "config.h"
+#include <cJSON.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cJSON.h>
 
 // temporally hardcoded config
 int load_config_temp(Config *config) {
@@ -124,7 +124,7 @@ int print_config(Config *config) {
     return 0;
 }
 
-int load_config(Config *config, const char* const filename) {
+int load_config(Config *config, const char *const filename) {
     // 1. Parse the config json file using cJSON
     // 2. Fill the config struct
     for (int i = 0; i < INST_SET_SIZE; i++) {
