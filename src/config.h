@@ -1,5 +1,5 @@
 #pragma once
-#define DEBUG 0
+
 #define INST_SET_SIZE 256
 
 typedef struct {

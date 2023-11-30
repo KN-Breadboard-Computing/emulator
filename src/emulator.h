@@ -9,7 +9,6 @@
 #define MEMORY_SIZE 65536
 
 typedef struct {
-    // nwm czy to top 10 eleganckich rozwiazan te unie
     union {
         uint8_t a_register;
         int8_t signed_a_register;
@@ -31,6 +30,7 @@ typedef struct {
     uint32_t instruction_counter;
     uint32_t clock_cycles_counter;
 } Emulator;
+extern void (*log_func)(const char *, ...);
 
 void init_emulator(Emulator *emulator);
 

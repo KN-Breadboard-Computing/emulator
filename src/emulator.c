@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
+void (*log_func)(const char *, ...);
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
     emulator->b_register = 0;
@@ -100,7 +100,7 @@ int handle_sub(Emulator *emulator, Instruction instruction) {
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
 
-#if DEBUG
+#ifdef DEBUG
     printf("\nrunning instruction: %s\n", instruction.mnemonic);
     printf("operands: ");
     for (int i = 0; i < instruction.num_operands; i++) {
@@ -108,9 +108,10 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
     }
 #endif
 
-    if (strcmp(instruction.mnemonic, "MOV") == 0) {
+    if (!strcmp(instruction.mnemonic, "MOV")) {
         handle_mov(emulator, instruction);
-    } else if (strcmp(instruction.mnemonic, "NOP") == 0) {
+    }
+    else if (!strcmp(instruction.mnemonic, "NOP")) {
         emulator->clock_cycles_counter += 3;
     } else if (!strcmp(instruction.mnemonic, "HALT")) {
         emulator->clock_cycles_counter += 2;
@@ -121,7 +122,7 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_sub(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKIP")) {
         emulator->clock_cycles_counter += 2;
-        printf("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
+        //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {
         printf("not implemented yet :<<\n");
         emulator->program_counter += instruction.num_operands;
