@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 void (*log_func)(const char *, ...);
+
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
     emulator->b_register = 0;

@@ -4,10 +4,13 @@
 
 #define x_frame_character '#'
 #define y_frame_character '|'
+
 typedef enum : uint8_t { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
+
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 3;
 static Memory_view_mode current_memory_view_mode[3] = {ASCII, HEX, DEC_SIGNED};
+
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
     x = def_x;
@@ -38,6 +41,7 @@ void print_emulator_status(Emulator *emulator) {
         mvaddch(y, x, x_frame_character);
     }
 }
+
 void print_memory(Emulator *emulator) {
     int def_x = 2, def_y = 2;
     int spacing[5] = {3, 4, 5, 5, 2};
@@ -151,6 +155,7 @@ void print_memory(Emulator *emulator) {
         }
     }
 }
+
 void print_console(void) {
     int def_x = 2, def_y = max_y - 15;
     x = def_x;
@@ -162,6 +167,7 @@ void print_console(void) {
     mvprintw(y++, x, "Console:");
     mvprintw(y++, x, "TODO");
 }
+
 void print_frame(void) {
     getmaxyx(stdscr, max_y, max_x);
     for (int i = 0; i < max_x; i++) {
@@ -218,6 +224,7 @@ const uint8_t ROM[] = {
     0b11111111, // HALT
 
 };
+
 int main(void) {
     // emulator setup
     Emulator emulator;

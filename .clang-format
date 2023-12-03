@@ -2,3 +2,5 @@ BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 120
 BreakBeforeBraces: Attach
+EmptyLineBeforeAccessModifier: LogicalBlock
+SeparateDefinitionBlocks: Always
