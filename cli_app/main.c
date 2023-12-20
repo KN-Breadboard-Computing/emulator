@@ -6,7 +6,7 @@
 #define x_frame_character '#'
 #define y_frame_character '|'
 
-typedef enum : uint8_t { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
+typedef enum { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
 
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
@@ -19,7 +19,7 @@ void print_emulator_status(Emulator *emulator) {
     mvprintw(y++, x, "Emulator Registers:");
     mvprintw(y++, x, "A: signed: %d unsigned: %u", emulator->signed_a_register, emulator->a_register);
     mvprintw(y++, x, "B: signed: %d unsigned: %u", emulator->signed_b_register, emulator->b_register);
-    mvprintw(y++, x, "tmp: %u", emulator->tmp_register);
+    mvprintw(y++, x, "tmp: %u", emulator->tmp_register_16);
     mvprintw(y++, x, "pc: %u", emulator->program_counter);
     mvprintw(y++, x, "sp: %u", emulator->stack_pointer);
     mvprintw(y++, x, "flag: S P Z C O - - -");

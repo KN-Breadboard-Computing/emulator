@@ -19,8 +19,12 @@ typedef struct {
         int8_t signed_b_register;
     };
 
+    union {
+        uint16_t tmp_register_16;
+        uint8_t tmp_register_8[2];
+    };
+
     uint8_t flag_register;
-    uint16_t tmp_register;
     uint16_t stack_pointer;
     uint16_t program_counter;
     bool is_halted;

@@ -8,7 +8,7 @@ void (*log_func)(const char *, ...);
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
     emulator->b_register = 0;
-    emulator->tmp_register = 0;
+    emulator->tmp_register_16 = 0;
     emulator->stack_pointer = 0;
     emulator->program_counter = 0;
     emulator->flag_register = 0;
@@ -54,6 +54,17 @@ void *decode_operand(Emulator *emulator, const char *operand) {
         return &emulator->b_register;
     } else if (!strcmp(operand, "CONST")) {
         return fetch_next_byte(emulator);
+    } else if (!strcmp(operand, "F")) {
+        return &emulator->flag_register;
+    } else if (!strcmp(operand, "TMP")) {
+        return &emulator->tmp_register_16;
+    } else if (!strcmp(operand, "TMPL")) {
+        return &emulator->tmp_register_8[0];
+    } else if (!strcmp(operand, "TMPH")) {
+        return &emulator->tmp_register_8[1];
+    } else if (!strcmp(operand, "STC")) {
+        return &emulator->stack[emulator->stack_pointer];
+        // TODO increment/decrement stack pointer
     }
     return NULL;
 }
@@ -68,6 +79,20 @@ int handle_mov(Emulator *emulator, Instruction instruction) {
 
     *destination = *source;
 
+    return 0;
+}
+
+int handle_inc(Emulator *emulator, Instruction instruction) {
+    emulator->clock_cycles_counter += 4;
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    destination++;
+    return 0;
+}
+
+int handle_dec(Emulator *emulator, Instruction instruction) {
+    emulator->clock_cycles_counter += 4;
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    destination--;
     return 0;
 }
 
@@ -120,6 +145,10 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_add(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SUB")) {
         handle_sub(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "INC")) {
+        handle_inc(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "DEC")) {
+        handle_dec(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKP")) {
         emulator->clock_cycles_counter += 2;
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
