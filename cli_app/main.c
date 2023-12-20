@@ -1,7 +1,7 @@
 #include "emulator.h"
 #include <curses.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #define x_frame_character '#'
 #define y_frame_character '|'
@@ -240,7 +240,6 @@ int main(void) {
     }
     while (emulator.is_halted == 0 && emulator.program_counter < sizeof ROM) {
         run_next_emulator_instruction(&emulator, &config);
-
     }
     print_screen(&emulator, &config);
     cleanup_config(&config);
