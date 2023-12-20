@@ -113,14 +113,14 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_mov(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
         emulator->clock_cycles_counter += 3;
-    } else if (!strcmp(instruction.mnemonic, "HALT")) {
+    } else if (!strcmp(instruction.mnemonic, "HLT")) {
         emulator->clock_cycles_counter += 2;
         emulator->is_halted = 1;
     } else if (!strcmp(instruction.mnemonic, "ADD")) {
         handle_add(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SUB")) {
         handle_sub(emulator, instruction);
-    } else if (!strcmp(instruction.mnemonic, "SKIP")) {
+    } else if (!strcmp(instruction.mnemonic, "SKP")) {
         emulator->clock_cycles_counter += 2;
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {

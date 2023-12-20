@@ -1,5 +1,6 @@
 #include "emulator.h"
 #include <curses.h>
+#include <unistd.h>
 #include <stdio.h>
 
 #define x_frame_character '#'
@@ -8,8 +9,8 @@
 typedef enum : uint8_t { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
 
 static int y, x, max_y, max_x;
-static uint8_t memory_tables_count = 3;
-static Memory_view_mode current_memory_view_mode[3] = {ASCII, HEX, DEC_SIGNED};
+static uint8_t memory_tables_count = 2;
+static Memory_view_mode current_memory_view_mode[2] = {ASCII, HEX};
 
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
@@ -203,24 +204,17 @@ const uint8_t ROM[] = {
     0b00000001,
     0b00001110, // MOVBIMM 67
     0b01000011,
-    0b00011010, // ADDA
+    0b00110100, // ADDA
     0b00001110, // MOVBIMM 1
     0b00000001,
-    0b00011010, // ADDA
-    0b11111110, // SKIP (in emulator acts as print REG_A)
+    0b00110100, // ADDA
     0b00000010, // MOVBA
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011010, // ADDA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP
-    0b00011101, // SUBABA
-    0b11111110, // SKIP (in emulator acts as print REG_A)
+    0b00110100, // ADDA
+    0b00110100, // ADDA
+    0b00110100, // ADDA
+    0b00111001, // SUBABA
+    0b00111001, // SUBABA
+    0b00111001, // SUBABA
     0b11111111, // HALT
 
 };
@@ -232,7 +226,6 @@ int main(void) {
     const char *const filename = "instructions.json";
     load_config(&config, filename);
     // log_func = &handle_log;
-    load_config_temp(&config);
     init_emulator(&emulator);
     // ncurses setup
     initscr();
@@ -247,6 +240,7 @@ int main(void) {
     }
     while (emulator.is_halted == 0 && emulator.program_counter < sizeof ROM) {
         run_next_emulator_instruction(&emulator, &config);
+
     }
     print_screen(&emulator, &config);
     cleanup_config(&config);

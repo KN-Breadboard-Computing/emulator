@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(
-    Exmulator
+    Emulator
     VERSION 0.1
     LANGUAGES C
 )
@@ -11,7 +11,7 @@ project(
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_C_STANDARD 11)
     set(CMAKE_C_STANDARD_REQUIRED ON)
-    set(CMAKE_C_EXTENSIONS OFF)
+    set(CMAKE_C_EXTENSIONS ON)
 
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
