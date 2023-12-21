@@ -29,6 +29,7 @@ int hash_instruction(const char *binary_string) {
     }
     return result;
 }
+
 /// 0 - OK
 /// 1 - No File
 /// 2 - invalid json
@@ -65,7 +66,7 @@ int load_config(Config *config, const char *const filename) {
         config->instructions[opcode]->num_operands = num_operands;
         strcpy(config->instructions[opcode]->mnemonic, mnemonic);
         config->instructions[opcode]->operands = (char **)malloc(sizeof(char *) * num_operands);
-        //TODO add cycle count from config when it's ready
+        // TODO add cycle count from config when it's ready
         config->instructions[opcode]->cycle_count = 4;
         cJSON *operand = NULL;
         unsigned it = 0;

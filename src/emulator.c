@@ -103,44 +103,45 @@ int handle_dec(Emulator *emulator, Instruction instruction) {
     *destination--;
     return 0;
 }
-int handle_neg(Emulator *emulator, Instruction instruction)
-{
-    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
-    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+
+int handle_neg(Emulator *emulator, Instruction instruction) {
+    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
     uint8_t before = *source;
-    *destination = (*source ^ 255)+1;
-    calculate_flags(emulator,before,*destination,0);
+    *destination = (*source ^ 255) + 1;
+    calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
-int handle_shl(Emulator *emulator, Instruction instruction)
-{
-    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
-    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+
+int handle_shl(Emulator *emulator, Instruction instruction) {
+    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
     uint8_t before = *source;
     *destination = (uint8_t)(*source << 1);
-    calculate_flags(emulator,before,*destination,0);
+    calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
-int handle_div(Emulator *emulator, Instruction instruction)
-{
-    uint8_t source = *(uint8_t*)decode_operand(emulator,instruction.operands[0]);
-    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+
+int handle_div(Emulator *emulator, Instruction instruction) {
+    uint8_t source = *(uint8_t *)decode_operand(emulator, instruction.operands[0]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
     uint8_t before = source;
-    *destination = source>>1;
+    *destination = source >> 1;
     if (source >> 7 == 1)
         *destination |= 0b10000000;
-    calculate_flags(emulator,before,*destination,0);
+    calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
-int handle_shr(Emulator *emulator, Instruction instruction)
-{
-    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
-    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+
+int handle_shr(Emulator *emulator, Instruction instruction) {
+    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
     uint8_t before = *source;
-    *destination = *source>>1;
-    calculate_flags(emulator,before,*destination,0);
+    *destination = *source >> 1;
+    calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
+
 int handle_add(Emulator *emulator, Instruction instruction) {
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t before = *destination;
@@ -192,13 +193,13 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_dec(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NEG")) {
         handle_neg(emulator, instruction);
-    }else if (!strcmp(instruction.mnemonic, "MUL")||!strcmp(instruction.mnemonic, "SHL")) {
+    } else if (!strcmp(instruction.mnemonic, "MUL") || !strcmp(instruction.mnemonic, "SHL")) {
         handle_shl(emulator, instruction);
-    }else if (!strcmp(instruction.mnemonic, "DIV")) {
+    } else if (!strcmp(instruction.mnemonic, "DIV")) {
         handle_div(emulator, instruction);
-    }else if (!strcmp(instruction.mnemonic, "SHR")) {
+    } else if (!strcmp(instruction.mnemonic, "SHR")) {
         handle_shr(emulator, instruction);
-    }else if (!strcmp(instruction.mnemonic, "SKP")) {
+    } else if (!strcmp(instruction.mnemonic, "SKP")) {
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {
         //(*log_func)("not implemented yet :<<\n");
