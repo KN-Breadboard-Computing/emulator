@@ -112,7 +112,41 @@ int handle_neg(Emulator *emulator, Instruction instruction) {
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
+int handle_inv(Emulator *emulator, Instruction instruction) {
+    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
+    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
+    uint8_t before = *source;
+    *destination = *source ^ 255;
+    calculate_flags(emulator, before, *destination, 0);
+    return 0;
+}
+int handle_or(Emulator *emulator, Instruction instruction) {
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    uint8_t before = *destination;
 
+    *destination = emulator->a_register | emulator->b_register;
+    calculate_flags(emulator, before, *destination, 0);
+
+    return 0;
+}
+int handle_and(Emulator *emulator, Instruction instruction) {
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    uint8_t before = *destination;
+
+    *destination = emulator->a_register & emulator->b_register;
+    calculate_flags(emulator, before, *destination, 0);
+
+    return 0;
+}
+int handle_xor(Emulator *emulator, Instruction instruction) {
+    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
+    uint8_t before = *destination;
+
+    *destination = emulator->a_register ^ emulator->b_register;
+    calculate_flags(emulator, before, *destination, 0);
+
+    return 0;
+}
 int handle_shl(Emulator *emulator, Instruction instruction) {
     uint8_t *source = decode_operand(emulator, instruction.operands[0]);
     uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
@@ -199,6 +233,12 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_div(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SHR")) {
         handle_shr(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "OR")) {
+        handle_or(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "AND")) {
+        handle_and(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "XOR")) {
+        handle_xor(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKP")) {
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {

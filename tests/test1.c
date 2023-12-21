@@ -10,7 +10,7 @@ void test_emulator_init(void) {
     init_emulator(&emulator);
     TEST_ASSERT_EQUAL(0, emulator.a_register);
     TEST_ASSERT_EQUAL(0, emulator.b_register);
-    TEST_ASSERT_EQUAL(0, emulator.tmp_register);
+    TEST_ASSERT_EQUAL(0, emulator.tmp_register_16);
     TEST_ASSERT_EQUAL(0, emulator.stack_pointer);
     TEST_ASSERT_EQUAL(0, emulator.program_counter);
     TEST_ASSERT_EQUAL(false, emulator.is_halted);

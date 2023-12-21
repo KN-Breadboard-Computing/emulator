@@ -39,7 +39,7 @@ int load_config(Config *config, const char *const filename) {
     FILE *config_file = fopen(filename, "r");
     if (config_file == NULL)
         return 1;
-    char *buffer = 0;
+    char *buffer;
     unsigned length;
     fseek(config_file, 0, SEEK_END);
     length = (unsigned)ftell(config_file);
