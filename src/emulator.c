@@ -54,6 +54,17 @@ void *decode_operand(Emulator *emulator, const char *operand) {
         return &emulator->b_register;
     } else if (!strcmp(operand, "CONST")) {
         return fetch_next_byte(emulator);
+    } else if (!strcmp(operand, "MEM8")) {
+        return &emulator->memory[*fetch_next_byte(emulator)];
+    } else if (!strcmp(operand, "MEM16")) {
+        union address {
+            uint16_t a16;
+            uint8_t a8[2];
+        } address;
+
+        address.a8[0] = *fetch_next_byte(emulator);
+        address.a8[1] = *fetch_next_byte(emulator);
+        return &emulator->memory[address.a16];
     } else if (!strcmp(operand, "F")) {
         return &emulator->flag_register;
     } else if (!strcmp(operand, "TMP")) {
@@ -63,8 +74,7 @@ void *decode_operand(Emulator *emulator, const char *operand) {
     } else if (!strcmp(operand, "TMPH")) {
         return &emulator->tmp_register_8[1];
     } else if (!strcmp(operand, "STC")) {
-        return &emulator->stack[emulator->stack_pointer];
-        // TODO increment/decrement stack pointer
+        return &emulator->stack[emulator->stack_pointer++];
     }
     return NULL;
 }
@@ -83,22 +93,55 @@ int handle_mov(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_inc(Emulator *emulator, Instruction instruction) {
-    emulator->clock_cycles_counter += 4;
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    destination++;
+    *destination++;
     return 0;
 }
 
 int handle_dec(Emulator *emulator, Instruction instruction) {
-    emulator->clock_cycles_counter += 4;
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    destination--;
+    *destination--;
     return 0;
 }
-
+int handle_neg(Emulator *emulator, Instruction instruction)
+{
+    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
+    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+    uint8_t before = *source;
+    *destination = (*source ^ 255)+1;
+    calculate_flags(emulator,before,*destination,0);
+    return 0;
+}
+int handle_shl(Emulator *emulator, Instruction instruction)
+{
+    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
+    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+    uint8_t before = *source;
+    *destination = (uint8_t)(*source << 1);
+    calculate_flags(emulator,before,*destination,0);
+    return 0;
+}
+int handle_div(Emulator *emulator, Instruction instruction)
+{
+    uint8_t source = *(uint8_t*)decode_operand(emulator,instruction.operands[0]);
+    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+    uint8_t before = source;
+    *destination = source>>1;
+    if (source >> 7 == 1)
+        *destination |= 0b10000000;
+    calculate_flags(emulator,before,*destination,0);
+    return 0;
+}
+int handle_shr(Emulator *emulator, Instruction instruction)
+{
+    uint8_t * source = decode_operand(emulator,instruction.operands[0]);
+    uint8_t * destination = decode_operand(emulator,instruction.operands[1]);
+    uint8_t before = *source;
+    *destination = *source>>1;
+    calculate_flags(emulator,before,*destination,0);
+    return 0;
+}
 int handle_add(Emulator *emulator, Instruction instruction) {
-    emulator->clock_cycles_counter += 4;
-
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t before = *destination;
 
@@ -109,7 +152,6 @@ int handle_add(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_sub(Emulator *emulator, Instruction instruction) {
-    emulator->clock_cycles_counter += 4;
 
     uint8_t *minuend = decode_operand(emulator, instruction.operands[0]);
     uint8_t *subtrahend = decode_operand(emulator, instruction.operands[1]);
@@ -125,7 +167,7 @@ int handle_sub(Emulator *emulator, Instruction instruction) {
 // TODO: Add error handling
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
-
+    emulator->clock_cycles_counter += instruction.cycle_count;
 #ifdef DEBUG
     printf("\nrunning instruction: %s\n", instruction.mnemonic);
     printf("operands: ");
@@ -137,9 +179,8 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
     if (!strcmp(instruction.mnemonic, "MOV")) {
         handle_mov(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
-        emulator->clock_cycles_counter += 3;
+        ;
     } else if (!strcmp(instruction.mnemonic, "HLT")) {
-        emulator->clock_cycles_counter += 2;
         emulator->is_halted = 1;
     } else if (!strcmp(instruction.mnemonic, "ADD")) {
         handle_add(emulator, instruction);
@@ -149,12 +190,25 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         handle_inc(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "DEC")) {
         handle_dec(emulator, instruction);
-    } else if (!strcmp(instruction.mnemonic, "SKP")) {
-        emulator->clock_cycles_counter += 2;
+    } else if (!strcmp(instruction.mnemonic, "NEG")) {
+        handle_neg(emulator, instruction);
+    }else if (!strcmp(instruction.mnemonic, "MUL")||!strcmp(instruction.mnemonic, "SHL")) {
+        handle_shl(emulator, instruction);
+    }else if (!strcmp(instruction.mnemonic, "DIV")) {
+        handle_div(emulator, instruction);
+    }else if (!strcmp(instruction.mnemonic, "SHR")) {
+        handle_shr(emulator, instruction);
+    }else if (!strcmp(instruction.mnemonic, "SKP")) {
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {
-        printf("not implemented yet :<<\n");
-        emulator->program_counter += instruction.num_operands;
+        //(*log_func)("not implemented yet :<<\n");
+        for (unsigned i = 0; i < instruction.num_operands; ++i) {
+            if (!strcmp(instruction.operands[i], "CONST") || !strcmp(instruction.operands[i], "MEM8"))
+                emulator->program_counter++;
+            if (!strcmp(instruction.operands[i], "MEM16"))
+                emulator->program_counter += 2;
+        }
+
         return 1;
     }
     return 0;

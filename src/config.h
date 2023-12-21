@@ -19,8 +19,6 @@ typedef struct {
  */
 int load_config(Config *config, const char *filename);
 
-int load_config_temp(Config *config);
-
 int print_config(Config *config);
 
 void cleanup_config(Config *config);
