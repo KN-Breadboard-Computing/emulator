@@ -112,6 +112,7 @@ int handle_neg(Emulator *emulator, Instruction instruction) {
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
+
 int handle_inv(Emulator *emulator, Instruction instruction) {
     uint8_t *source = decode_operand(emulator, instruction.operands[0]);
     uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
@@ -120,6 +121,7 @@ int handle_inv(Emulator *emulator, Instruction instruction) {
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
+
 int handle_or(Emulator *emulator, Instruction instruction) {
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t before = *destination;
@@ -129,6 +131,7 @@ int handle_or(Emulator *emulator, Instruction instruction) {
 
     return 0;
 }
+
 int handle_and(Emulator *emulator, Instruction instruction) {
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t before = *destination;
@@ -138,6 +141,7 @@ int handle_and(Emulator *emulator, Instruction instruction) {
 
     return 0;
 }
+
 int handle_xor(Emulator *emulator, Instruction instruction) {
     uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
     uint8_t before = *destination;
@@ -147,6 +151,7 @@ int handle_xor(Emulator *emulator, Instruction instruction) {
 
     return 0;
 }
+
 int handle_shl(Emulator *emulator, Instruction instruction) {
     uint8_t *source = decode_operand(emulator, instruction.operands[0]);
     uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
