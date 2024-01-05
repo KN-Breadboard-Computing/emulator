@@ -1,6 +1,9 @@
 # Create a library called YourLib which includes the source files.
 # The extension is already found. Any number of sources could be listed here.
-add_library(EmulatorLib emulator.c config.c)
+add_library(EmulatorLib
+        emulator.c
+        config.c
+)
 
 
 target_link_libraries(EmulatorLib cJSON)

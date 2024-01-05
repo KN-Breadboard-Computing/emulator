@@ -1,7 +1,6 @@
 #include "emulator.h"
 #include "config.h"
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 void (*log_func)(const char *, ...);
 
@@ -25,7 +24,7 @@ void init_emulator(Emulator *emulator) {
     }
 }
 
-static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_sub) {
+void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_sub) {
     emulator->flag_register = 0;
     // sign flag
     if (after >> 7 == 1)
@@ -47,94 +46,153 @@ static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, b
 
 uint8_t *fetch_next_byte(Emulator *emulator) { return &emulator->memory[emulator->program_counter++]; }
 
-uint8_t *decode_operand(Emulator *emulator, const char *operand) {
+MemPtr process_operand(Emulator *emulator, const char *operand) {
+    MemPtr ret;
+    ret.mem16 = NULL;
+    ret.mem8 = NULL;
+    ret.is16 = 0;
     if (!strcmp(operand, "A")) {
-        return &emulator->a_register;
+        ret.is16 = false;
+        ret.mem8 = &emulator->a_register;
     } else if (!strcmp(operand, "B")) {
-        return &emulator->b_register;
+        ret.is16 = false;
+        ret.mem8 = &emulator->b_register;
     } else if (!strcmp(operand, "CONST")) {
-        return fetch_next_byte(emulator);
-    } else if (!strcmp(operand, "MEM8")) {
+        ret.is16 = false;
+        ret.mem8 = fetch_next_byte(emulator);
+    } else if ((!strcmp(operand, "MEM8")) || (!strcmp(operand, "MEMZP"))) {
         emulator->tmp_register_8[0] = *fetch_next_byte(emulator);
-        return &emulator->memory[emulator->tmp_register_16];
-    } else if (!strcmp(operand, "MEM16")) {
+        ret.is16 = true;
+        ret.mem16 = &emulator->tmp_register_16;
+    } else if ((!strcmp(operand, "MEM16")) || (!strcmp(operand, "MEM"))) {
         emulator->tmp_register_8[0] = *fetch_next_byte(emulator);
         emulator->tmp_register_8[1] = *fetch_next_byte(emulator);
-        return &emulator->memory[emulator->tmp_register_16];
+        ret.is16 = true;
+        ret.mem16 = &emulator->tmp_register_16;
     } else if (!strcmp(operand, "F")) {
-        return &emulator->flag_register;
+        ret.is16 = false;
+        ret.mem8 = &emulator->flag_register;
     } else if (!strcmp(operand, "TL")) {
-        return &emulator->tmp_register_8[0];
+        ret.is16 = false;
+        ret.mem8 = &emulator->tmp_register_8[0];
     } else if (!strcmp(operand, "TH")) {
-        return &emulator->tmp_register_8[1];
+        ret.is16 = false;
+        ret.mem8 = &emulator->tmp_register_8[1];
     } else if (!strcmp(operand, "STC")) {
-        return &emulator->stack[emulator->stack_pointer++];
+        ret.is16 = false;
+        ret.mem8 = &emulator->stack[emulator->stack_pointer];
+        emulator->stack_pointer++;
+    } else if (!strcmp(operand, "T")) {
+        ret.is16 = true;
+        ret.mem16 = &emulator->tmp_register_16;
     }
-    return NULL;
+    return ret;
 }
 
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
 int handle_mov(Emulator *emulator, Instruction instruction) {
-    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *source = decode_operand(emulator, instruction.operands[1]);
-    *destination = *source;
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr des_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (des_op.is16 || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    *des_op.mem8 = *src_op.mem8;
     return 0;
 }
 
 int handle_inc(Emulator *emulator, Instruction instruction) {
-    if (!strcmp(instruction.operands[0], "T")) {
-        emulator->tmp_register_16++;
-    } else {
-        (*decode_operand(emulator, instruction.operands[0]))++;
-    }
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr des_op = process_operand(emulator, instruction.operands[0]);
+    if (des_op.mem16 == NULL)
+        return 2;
+    if (des_op.is16)
+        (*des_op.mem16)++;
+    else
+        (*des_op.mem8)++;
     return 0;
 }
 
 int handle_movat(Emulator *emulator, Instruction instruction) {
-    uint8_t *source = decode_operand(emulator, instruction.operands[1]);
-    uint8_t *destination;
-    if (strcmp(instruction.operands[0], "T") != 0) {
-        emulator->tmp_register_8[0] = *decode_operand(emulator, instruction.operands[0]);
-    }
-    destination = &emulator->memory[emulator->tmp_register_16];
-    *destination = *source;
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr src_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr adr_op = process_operand(emulator, instruction.operands[1]);
+    if (src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    if (adr_op.is16)
+        emulator->tmp_register_16 = *adr_op.mem16;
+    else
+        emulator->tmp_register_8[0] = *adr_op.mem8;
+    uint8_t *destination = &emulator->memory[emulator->tmp_register_16];
+    *destination = *src_op.mem8;
     return 0;
 }
 
 int handle_dec(Emulator *emulator, Instruction instruction) {
-
-    if (!strcmp(instruction.operands[0], "T")) {
-        emulator->tmp_register_16--;
-    } else {
-        (*decode_operand(emulator, instruction.operands[0]))--;
-    }
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr des_op = process_operand(emulator, instruction.operands[0]);
+    if (des_op.mem16 == NULL)
+        return 2;
+    if (des_op.is16)
+        (*des_op.mem16)--;
+    else
+        (*des_op.mem8)--;
     return 0;
 }
 
 int handle_neg(Emulator *emulator, Instruction instruction) {
-    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
-    uint8_t before = *source;
-    *destination = (*source ^ 255) + 1;
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (adr_op.mem16 == NULL || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    uint8_t before = *src_op.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = (*src_op.mem8 ^ 255) + 1;
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
 
 int handle_inv(Emulator *emulator, Instruction instruction) {
-    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
-    uint8_t before = *source;
-    *destination = *source ^ 255;
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (adr_op.mem16 == NULL || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    uint8_t before = *src_op.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = *src_op.mem8 ^ 255;
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
 
 int handle_or(Emulator *emulator, Instruction instruction) {
-    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    uint8_t before = *destination;
-
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    if (adr_op.mem16 == NULL)
+        return 2;
+    uint8_t before = emulator->a_register;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
     *destination = emulator->a_register | emulator->b_register;
     calculate_flags(emulator, before, *destination, 0);
 
@@ -142,9 +200,17 @@ int handle_or(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_and(Emulator *emulator, Instruction instruction) {
-    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    uint8_t before = *destination;
-
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    if (adr_op.mem16 == NULL)
+        return 2;
+    uint8_t before = emulator->a_register;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
     *destination = emulator->a_register & emulator->b_register;
     calculate_flags(emulator, before, *destination, 0);
 
@@ -152,9 +218,17 @@ int handle_and(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_xor(Emulator *emulator, Instruction instruction) {
-    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    uint8_t before = *destination;
-
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    if (adr_op.mem16 == NULL)
+        return 2;
+    uint8_t before = emulator->a_register;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
     *destination = emulator->a_register ^ emulator->b_register;
     calculate_flags(emulator, before, *destination, 0);
 
@@ -162,38 +236,73 @@ int handle_xor(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_shl(Emulator *emulator, Instruction instruction) {
-    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
-    uint8_t before = *source;
-    *destination = (uint8_t)(*source << 1);
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (adr_op.mem16 == NULL || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    uint8_t before = *src_op.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = (uint8_t)(*src_op.mem8 << 1);
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
 
 int handle_div(Emulator *emulator, Instruction instruction) {
-    uint8_t source = *(uint8_t *)decode_operand(emulator, instruction.operands[0]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
-    uint8_t before = source;
-    *destination = source >> 1;
-    if (source >> 7 == 1)
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (adr_op.mem16 == NULL || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    uint8_t before = *src_op.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = *src_op.mem8 >> 1;
+    if (*src_op.mem8 >> 7 == 1)
         *destination |= 0b10000000;
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
 
 int handle_shr(Emulator *emulator, Instruction instruction) {
-    uint8_t *source = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[1]);
-    uint8_t before = *source;
-    *destination = *source >> 1;
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (adr_op.mem16 == NULL || src_op.is16 || src_op.mem16 == NULL)
+        return 2;
+    uint8_t before = *src_op.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = *src_op.mem8 >> 1;
     calculate_flags(emulator, before, *destination, 0);
     return 0;
 }
 
 int handle_add(Emulator *emulator, Instruction instruction) {
-    uint8_t *destination = decode_operand(emulator, instruction.operands[0]);
-    uint8_t before = *destination;
-
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    if (adr_op.mem16 == NULL)
+        return 2;
+    uint8_t before = emulator->a_register;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
     *destination = emulator->a_register + emulator->b_register;
     calculate_flags(emulator, before, *destination, 0);
 
@@ -201,19 +310,29 @@ int handle_add(Emulator *emulator, Instruction instruction) {
 }
 
 int handle_sub(Emulator *emulator, Instruction instruction) {
-
-    uint8_t *minuend = decode_operand(emulator, instruction.operands[0]);
-    uint8_t *subtrahend = decode_operand(emulator, instruction.operands[1]);
-    uint8_t *destination = decode_operand(emulator, instruction.operands[2]);
-    uint8_t before = *minuend;
-
-    *destination = *minuend - *subtrahend;
+    if (instruction.num_operands != 3)
+        return 1;
+    MemPtr minuend = process_operand(emulator, instruction.operands[1]);
+    MemPtr subtrahend = process_operand(emulator, instruction.operands[2]);
+    MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
+    if (minuend.mem16 == NULL || subtrahend.mem16 == NULL || adr_op.mem16 == NULL || subtrahend.is16 || minuend.is16)
+        return 2;
+    uint8_t before = *minuend.mem8;
+    uint8_t *destination;
+    if (adr_op.is16)
+        destination = &emulator->memory[emulator->tmp_register_16];
+    else
+        destination = adr_op.mem8;
+    *destination = *minuend.mem8 - *subtrahend.mem8;
     calculate_flags(emulator, before, *destination, 1);
 
     return 0;
 }
 
-// TODO: Add error handling
+// 0 - OK
+// 1 - WRONG NUMBER OF OPERANDS
+// 2 - INVALID OPERANDS
+// 3 - NOT IMPLEMENTED YET
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
     emulator->clock_cycles_counter += instruction.cycle_count;
@@ -224,39 +343,39 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         printf("%s ", instruction.operands[i]);
     }
 #endif
-
+    int ret = 0;
     if (!strcmp(instruction.mnemonic, "MOV")) {
-        handle_mov(emulator, instruction);
+        ret=handle_mov(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
         ;
     } else if (!strcmp(instruction.mnemonic, "HLT")) {
-        emulator->is_halted = 1;
+        ret=emulator->is_halted = 1;
     } else if (!strcmp(instruction.mnemonic, "MOVAT")) {
-        handle_movat(emulator, instruction);
+        ret=handle_movat(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "ADD")) {
-        handle_add(emulator, instruction);
+        ret=handle_add(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SUB")) {
-        handle_sub(emulator, instruction);
+        ret=handle_sub(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "INC")) {
-        handle_inc(emulator, instruction);
+        ret=handle_inc(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "DEC")) {
-        handle_dec(emulator, instruction);
+        ret=handle_dec(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NEG")) {
-        handle_neg(emulator, instruction);
-    } else if (!strcmp(instruction.mnemonic, "MUL") || !strcmp(instruction.mnemonic, "SHL")) {
-        handle_shl(emulator, instruction);
+        ret=handle_neg(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "SHL")) {
+        ret=handle_shl(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "DIV")) {
-        handle_div(emulator, instruction);
+        ret=handle_div(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SHR")) {
-        handle_shr(emulator, instruction);
+        ret=handle_shr(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "OR")) {
-        handle_or(emulator, instruction);
+        ret=handle_or(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "AND")) {
-        handle_and(emulator, instruction);
+        ret=handle_and(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "XOR")) {
-        handle_xor(emulator, instruction);
+        ret=handle_xor(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "INV")) {
-        handle_inv(emulator, instruction);
+        ret=handle_inv(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKP")) {
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {
@@ -268,9 +387,9 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
                 emulator->program_counter += 2;
         }
 
-        return 1;
+        return 3;
     }
-    return 0;
+    return ret;
 }
 
 /* 0 - OK

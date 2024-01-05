@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
 
@@ -36,6 +35,14 @@ typedef struct {
     uint32_t instruction_counter;
     uint32_t clock_cycles_counter;
 } Emulator;
+
+typedef struct {
+    bool is16;
+    union {
+        uint8_t * mem8;
+        uint16_t * mem16;
+    };
+} MemPtr;
 
 extern void (*log_func)(const char *, ...);
 
