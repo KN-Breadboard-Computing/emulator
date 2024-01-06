@@ -6,6 +6,7 @@
 #include <stdio.h>
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
+#define DEBUG
 
 typedef struct {
     union {
@@ -38,9 +39,10 @@ typedef struct {
 
 typedef struct {
     bool is16;
+
     union {
-        uint8_t * mem8;
-        uint16_t * mem16;
+        uint8_t *mem8;
+        uint16_t *mem16;
     };
 } MemPtr;
 

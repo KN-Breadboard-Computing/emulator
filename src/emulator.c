@@ -329,6 +329,61 @@ int handle_sub(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
+int handle_cmp(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr minuend = process_operand(emulator, instruction.operands[0]);
+    MemPtr subtrahend = process_operand(emulator, instruction.operands[1]);
+    if (minuend.mem16 == NULL || subtrahend.mem16 == NULL || subtrahend.is16 || minuend.is16)
+        return 2;
+    uint8_t temp = *minuend.mem8 - *subtrahend.mem8;
+    calculate_flags(emulator, *minuend.mem8, temp, 1);
+    return 0;
+}
+
+int handle_clr(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (target.mem16 == NULL || target.is16)
+        return 2;
+    *target.mem8 = 0;
+
+    return 0;
+}
+
+int handle_pop(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (target.mem16 == NULL)
+        return 2;
+    uint8_t *destination;
+    if (target.is16)
+        destination = &emulator->memory[*target.mem16];
+    else
+        destination = target.mem8;
+    emulator->stack_pointer--;
+    *destination = emulator->stack[emulator->stack_pointer];
+    return 0;
+}
+
+int handle_push(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (target.mem16 == NULL)
+        return 2;
+    uint8_t *destination;
+    if (target.is16)
+        destination = &emulator->memory[*target.mem16];
+    else
+        destination = target.mem8;
+    emulator->stack[emulator->stack_pointer] = *destination;
+    emulator->stack_pointer++;
+    return 0;
+}
+
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
@@ -342,40 +397,49 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
     for (int i = 0; i < instruction.num_operands; i++) {
         printf("%s ", instruction.operands[i]);
     }
+    printf("clock cycles: %u\n", instruction.cycle_count);
 #endif
     int ret = 0;
     if (!strcmp(instruction.mnemonic, "MOV")) {
-        ret=handle_mov(emulator, instruction);
+        ret = handle_mov(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
         ;
     } else if (!strcmp(instruction.mnemonic, "HLT")) {
-        ret=emulator->is_halted = 1;
+        ret = emulator->is_halted = 1;
     } else if (!strcmp(instruction.mnemonic, "MOVAT")) {
-        ret=handle_movat(emulator, instruction);
+        ret = handle_movat(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "ADD")) {
-        ret=handle_add(emulator, instruction);
+        ret = handle_add(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SUB")) {
-        ret=handle_sub(emulator, instruction);
+        ret = handle_sub(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "INC")) {
-        ret=handle_inc(emulator, instruction);
+        ret = handle_inc(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "DEC")) {
-        ret=handle_dec(emulator, instruction);
+        ret = handle_dec(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NEG")) {
-        ret=handle_neg(emulator, instruction);
+        ret = handle_neg(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SHL")) {
-        ret=handle_shl(emulator, instruction);
+        ret = handle_shl(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "DIV")) {
-        ret=handle_div(emulator, instruction);
+        ret = handle_div(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SHR")) {
-        ret=handle_shr(emulator, instruction);
+        ret = handle_shr(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "OR")) {
-        ret=handle_or(emulator, instruction);
+        ret = handle_or(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "AND")) {
-        ret=handle_and(emulator, instruction);
+        ret = handle_and(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "XOR")) {
-        ret=handle_xor(emulator, instruction);
+        ret = handle_xor(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "INV")) {
-        ret=handle_inv(emulator, instruction);
+        ret = handle_inv(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "CMP")) {
+        ret = handle_cmp(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "CLR")) {
+        ret = handle_clr(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "PUSH")) {
+        ret = handle_push(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "POP")) {
+        ret = handle_pop(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKP")) {
         //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
     } else {

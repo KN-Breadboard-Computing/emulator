@@ -200,22 +200,22 @@ void print_screen(Emulator *emulator, Config *config) {
 }
 
 const uint8_t ROM[] = {
-    0b00001101, // MOVAIMM 1
+    0b00010001, // MOVAIMM 1
     0b00000001,
-    0b00001110, // MOVBIMM 67
+    0b00010010, // MOVBIMM 67
     0b01000011,
-    0b00110100, // ADDA
-    0b00001110, // MOVBIMM 1
+    0b00111100, // ADDA
+    0b00010010, // MOVBIMM 1
     0b00000001,
-    0b00110100, // ADDA
-    0b00000010, // MOVBA
-    0b00110100, // ADDA
-    0b00110100, // ADDA
-    0b00110100, // ADDA
-    0b00111001, // SUBABA
-    0b00111001, // SUBABA
-    0b00111001, // SUBABA
-    0b11111111, // HALT
+    0b00111100, // ADDA
+    0b00000101, // MOVBA
+    0b00111100, // ADDA
+    0b00111100, // ADDA
+    0b00111100, // ADDA
+    0b01000001, // SUBABA
+    0b01000001, // SUBABA
+    0b01000001, // SUBABA
+    0b11011000, // HALT
 
 };
 
@@ -240,6 +240,8 @@ int main(void) {
     }
     while (emulator.is_halted == 0 && emulator.program_counter < sizeof ROM) {
         run_next_emulator_instruction(&emulator, &config);
+        print_screen(&emulator, &config);
+        getch();
     }
     print_screen(&emulator, &config);
     cleanup_config(&config);
