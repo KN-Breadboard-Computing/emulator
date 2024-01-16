@@ -66,8 +66,10 @@ int load_config(Config *config, const char *const filename) {
         config->instructions[opcode]->num_operands = num_operands;
         strcpy(config->instructions[opcode]->mnemonic, mnemonic);
         config->instructions[opcode]->operands = (char **)malloc(sizeof(char *) * num_operands);
-        // config->instructions[opcode]->cycle_count =(unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst,
-        // "total-mircocodes-number"));
+        config->instructions[opcode]->cycle_count =
+            (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "min-cycles-number"));
+        config->instructions[opcode]->pessimistic_cycle_count =
+            (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "max1-cycles-number"));
         cJSON *operand = NULL;
         unsigned it = 0;
         cJSON_ArrayForEach(operand, operands_arr) {

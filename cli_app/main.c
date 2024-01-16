@@ -241,7 +241,7 @@ int main(void) {
     while (emulator.is_halted == 0 && emulator.program_counter < sizeof ROM) {
         run_next_emulator_instruction(&emulator, &config);
         print_screen(&emulator, &config);
-        getch();
+        usleep(100000);
     }
     print_screen(&emulator, &config);
     cleanup_config(&config);

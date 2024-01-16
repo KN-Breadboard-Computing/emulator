@@ -394,7 +394,7 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
 #ifdef DEBUG
     printf("\nrunning instruction: %s\n", instruction.mnemonic);
     printf("operands: ");
-    for (int i = 0; i < instruction.num_operands; i++) {
+    for (unsigned i = 0; i < instruction.num_operands; i++) {
         printf("%s ", instruction.operands[i]);
     }
     printf("clock cycles: %u\n", instruction.cycle_count);
