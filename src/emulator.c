@@ -24,6 +24,34 @@ void init_emulator(Emulator *emulator) {
     }
 }
 
+bool check_flags(Emulator *emulator, const char *flag) {
+    if (flag[0] == '\0')
+        return true;
+    bool ret;
+    char test;
+    if (flag[0] == 'N') {
+        ret = false;
+        test = flag[1];
+    } else {
+        ret = true;
+        test = flag[0];
+    }
+    switch (test) {
+    case 'S':
+        return ((emulator->flag_register & 0b10000000)>>7) == ret;
+    case 'P':
+        return ((emulator->flag_register & 0b01000000)>>6) == ret;
+    case 'Z':
+        return ((emulator->flag_register & 0b00100000)>>5) == ret;
+    case 'C':
+        return ((emulator->flag_register & 0b00010000)>>4) == ret;
+    case 'O':
+        return ((emulator->flag_register & 0b00001000)>>3) == ret;
+    default:
+        return false;
+    }
+}
+
 void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_sub) {
     emulator->flag_register = 0;
     // sign flag
@@ -338,6 +366,21 @@ int handle_cmp(Emulator *emulator, Instruction instruction) {
         return 2;
     uint8_t temp = *minuend.mem8 - *subtrahend.mem8;
     calculate_flags(emulator, *minuend.mem8, temp, 1);
+    if (minuend.mem8 != &emulator->a_register && subtrahend.mem8 != &emulator->b_register) {
+        emulator->a_register = *minuend.mem8;
+        emulator->b_register = *subtrahend.mem8;
+    } else {
+        if (minuend.mem8 == &emulator->a_register) {
+            emulator->b_register = *subtrahend.mem8;
+        } else if (subtrahend.mem8 == &emulator->a_register){
+            emulator->b_register = *minuend.mem8;
+        }else if (minuend.mem8 == &emulator->b_register) {
+            emulator->a_register = *subtrahend.mem8;
+        } else if (subtrahend.mem8 == &emulator->b_register) {
+            emulator->a_register = *minuend.mem8;
+        }
+    }
+
     return 0;
 }
 
@@ -381,6 +424,32 @@ int handle_push(Emulator *emulator, Instruction instruction) {
         destination = target.mem8;
     emulator->stack[emulator->stack_pointer] = *destination;
     emulator->stack_pointer++;
+    return 0;
+}
+
+int handle_jmpimm(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (target.mem16 == NULL)
+        return 2;
+    if (check_flags(emulator, instruction.flag_dependence)) {
+        emulator->program_counter = *target.mem16;
+        emulator->clock_cycles_counter += instruction.pessimistic_cycle_count - instruction.cycle_count;
+    }
+    return 0;
+}
+
+int handle_jmprel(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (!target.is16)
+        return 2;
+    if (check_flags(emulator, instruction.flag_dependence)) {
+        emulator->program_counter += *target.mem8;
+        emulator->clock_cycles_counter += instruction.pessimistic_cycle_count - instruction.cycle_count;
+    }
     return 0;
 }
 
@@ -434,6 +503,10 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         ret = handle_inv(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "CMP")) {
         ret = handle_cmp(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "JMPIMM")) {
+        ret = handle_jmpimm(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "JMPREL")) {
+        ret = handle_jmprel(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "CLR")) {
         ret = handle_clr(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "PUSH")) {
@@ -461,9 +534,11 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
  * 2 - HLT
  */
 int run_next_emulator_instruction(Emulator *emulator, Config *config) {
-    Instruction instruction = *config->instructions[emulator->memory[emulator->program_counter]];
+    Instruction *instruction = config->instructions[emulator->memory[emulator->program_counter]];
+    if (instruction == NULL)
+                return 1;
     if (emulator->is_halted)
         return 2;
     emulator->program_counter++;
-    return run_instruction(emulator, instruction);
+    return run_instruction(emulator, *instruction);
 }

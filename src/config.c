@@ -59,6 +59,7 @@ int load_config(Config *config, const char *const filename) {
     while (inst != NULL) {
         int opcode = hash_instruction(cJSON_GetStringValue(cJSON_GetObjectItem(inst, "opcode")));
         char *mnemonic = cJSON_GetStringValue(cJSON_GetObjectItem(inst, "mnemonic"));
+        char *flag_dependence = cJSON_GetStringValue(cJSON_GetObjectItem(inst, "depend-on-flag"));
         cJSON *operands_arr = cJSON_GetObjectItem(inst, "arguments");
         unsigned num_operands = (unsigned)cJSON_GetArraySize(operands_arr);
         config->instructions[opcode] = (Instruction *)malloc(sizeof(Instruction));
@@ -66,6 +67,8 @@ int load_config(Config *config, const char *const filename) {
         config->instructions[opcode]->num_operands = num_operands;
         strcpy(config->instructions[opcode]->mnemonic, mnemonic);
         config->instructions[opcode]->operands = (char **)malloc(sizeof(char *) * num_operands);
+        config->instructions[opcode]->flag_dependence = (char *)malloc(sizeof(flag_dependence));
+        strcpy(config->instructions[opcode]->flag_dependence, flag_dependence);
         config->instructions[opcode]->cycle_count =
             (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "min-cycles-number"));
         config->instructions[opcode]->pessimistic_cycle_count =
@@ -95,6 +98,7 @@ void cleanup_config(Config *config) {
         }
         free(instr->operands);
         free(instr->mnemonic);
+        free(instr->flag_dependence);
         free(instr);
     }
 }
