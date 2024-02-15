@@ -38,15 +38,15 @@ bool check_flags(Emulator *emulator, const char *flag) {
     }
     switch (test) {
     case 'S':
-        return ((emulator->flag_register & 0b10000000)>>7) == ret;
+        return ((emulator->flag_register & 0b10000000) >> 7) == ret;
     case 'P':
-        return ((emulator->flag_register & 0b01000000)>>6) == ret;
+        return ((emulator->flag_register & 0b01000000) >> 6) == ret;
     case 'Z':
-        return ((emulator->flag_register & 0b00100000)>>5) == ret;
+        return ((emulator->flag_register & 0b00100000) >> 5) == ret;
     case 'C':
-        return ((emulator->flag_register & 0b00010000)>>4) == ret;
+        return ((emulator->flag_register & 0b00010000) >> 4) == ret;
     case 'O':
-        return ((emulator->flag_register & 0b00001000)>>3) == ret;
+        return ((emulator->flag_register & 0b00001000) >> 3) == ret;
     default:
         return false;
     }
@@ -372,9 +372,9 @@ int handle_cmp(Emulator *emulator, Instruction instruction) {
     } else {
         if (minuend.mem8 == &emulator->a_register) {
             emulator->b_register = *subtrahend.mem8;
-        } else if (subtrahend.mem8 == &emulator->a_register){
+        } else if (subtrahend.mem8 == &emulator->a_register) {
             emulator->b_register = *minuend.mem8;
-        }else if (minuend.mem8 == &emulator->b_register) {
+        } else if (minuend.mem8 == &emulator->b_register) {
             emulator->a_register = *subtrahend.mem8;
         } else if (subtrahend.mem8 == &emulator->b_register) {
             emulator->a_register = *minuend.mem8;
@@ -536,7 +536,7 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
 int run_next_emulator_instruction(Emulator *emulator, Config *config) {
     Instruction *instruction = config->instructions[emulator->memory[emulator->program_counter]];
     if (instruction == NULL)
-                return 1;
+        return 1;
     if (emulator->is_halted)
         return 2;
     emulator->program_counter++;

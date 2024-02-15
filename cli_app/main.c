@@ -203,7 +203,7 @@ void print_screen(Emulator *emulator, Config *config) {
 const uint8_t ROM[] = {
     0b00010001, // MOVAIMM 16
     16,
-    0b11000101, //push a
+    0b11000101, // push a
     0b00010001, // MOVAIMM 1
     1,
     0b00010010, // MOVBIMM 67
@@ -220,17 +220,15 @@ const uint8_t ROM[] = {
     0b01000001, // SUBABA
     0b01000001, // SUBABA
     0b11001110, // POP B
-    0b10010100, //inc b
+    0b10010100, // inc b
     0b00010001, // MOVAIMM 20
     20,
-    0b10000010, //CMPAB
-    0b10100010,//JMPIMMZ
-    30,
-    0,
-    0b11000110, //PUSH b
-    0b10011001, //JMPIMM 3
-    3,
-    0,
+    0b10000010, // CMPAB
+    0b10100010, // JMPIMMZ
+    30,         0,
+    0b11000110, // PUSH b
+    0b10011001, // JMPIMM 3
+    3,          0,
     0b11011000, // HALT
 
 };
