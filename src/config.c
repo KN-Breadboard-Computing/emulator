@@ -63,11 +63,11 @@ int load_config(Config *config, const char *const filename) {
         cJSON *operands_arr = cJSON_GetObjectItem(inst, "arguments");
         unsigned num_operands = (unsigned)cJSON_GetArraySize(operands_arr);
         config->instructions[opcode] = (Instruction *)malloc(sizeof(Instruction));
-        config->instructions[opcode]->mnemonic = (char *)malloc(sizeof(mnemonic));
+        config->instructions[opcode]->mnemonic = (char *)malloc(strlen(mnemonic) + 1);
         config->instructions[opcode]->num_operands = num_operands;
         strcpy(config->instructions[opcode]->mnemonic, mnemonic);
         config->instructions[opcode]->operands = (char **)malloc(sizeof(char *) * num_operands);
-        config->instructions[opcode]->flag_dependence = (char *)malloc(sizeof(flag_dependence));
+        config->instructions[opcode]->flag_dependence = (char *)malloc(strlen(flag_dependence) + 1);
         strcpy(config->instructions[opcode]->flag_dependence, flag_dependence);
         config->instructions[opcode]->cycle_count =
             (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "min-cycles-number"));

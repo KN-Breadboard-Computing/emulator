@@ -1,8 +1,10 @@
+#include "cli_app_utils.h"
 #include "emulator.h"
 #include <curses.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-
 #define x_frame_character '#'
 #define y_frame_character '|'
 
@@ -200,46 +202,56 @@ void print_screen(Emulator *emulator, Config *config) {
     refresh();
 }
 
-const uint8_t ROM[] = {
-    0b00010001, // MOVAIMM 16
-    16,
-    0b11000101, // push a
-    0b00010001, // MOVAIMM 1
-    1,
-    0b00010010, // MOVBIMM 67
-    67,
-    0b00111100, // ADDA
-    0b00010010, // MOVBIMM 1
-    1,
-    0b00111100, // ADDA
-    0b00000101, // MOVBA
-    0b00111100, // ADDA
-    0b00111100, // ADDA
-    0b00111100, // ADDA
-    0b01000001, // SUBABA
-    0b01000001, // SUBABA
-    0b01000001, // SUBABA
-    0b11001110, // POP B
-    0b10010100, // inc b
-    0b00010001, // MOVAIMM 20
-    20,
-    0b10000010, // CMPAB
-    0b10100010, // JMPIMMZ
-    30,         0,
-    0b11000110, // PUSH b
-    0b10011001, // JMPIMM 3
-    3,          0,
-    0b11011000, // HALT
-
-};
-
-int main(void) {
+int main(int argc, char **argv) {
+    int cmd_opt;
+    uint8_t *rom;
+    unsigned rom_size;
+    char *filename = NULL;
+    char *rom_filename = NULL;
+    while ((cmd_opt = getopt(argc, argv, "hi:f:")) != -1) {
+        switch (cmd_opt) {
+        case 'h':
+            printf("Usage: %s -i [FILE] -f [FILE]\n", argv[0]);
+            printf("Emulator of KN Breadboard Computing's custom 8-Bit CPU\n");
+            printf("Options:\n");
+            printf("-h\tShow this help message\n");
+            printf("-i\tSpecify path to instruction set json\n");
+            printf("-f\tSpecify path to ROM file\n");
+            return 0;
+        case 'i':
+            printf("Instruction set file: %s\n", optarg);
+            filename = malloc(strlen(optarg) + 1);
+            strcpy(filename, optarg);
+            break;
+        case 'f':
+            printf("SAMPLE_ROM file: %s\n", optarg);
+            rom_filename = malloc(strlen(optarg) + 1);
+            strcpy(rom_filename, optarg);
+            break;
+        case ':':
+            printf("option needs a value\n");
+            break;
+        default:
+            printf("unknown option: %c\n", cmd_opt);
+            break;
+        }
+    }
     // emulator setup
     Emulator emulator;
     Config config;
-    const char *const filename = "instructions.json";
+    if (filename == NULL) {
+        printf("No instruction set file specified, using default\n");
+        filename = malloc(strlen("instructions.json") + 1);
+        strcpy(filename, "instructions.json");
+    }
+
     load_config(&config, filename);
-    // log_func = &handle_log;
+    // log_func = &handle_log
+    if (!load_rom(&rom, &rom_size, rom_filename)) {
+        printf("could not load rom\n");
+        goto end;
+    }
+
     init_emulator(&emulator);
     // ncurses setup
     initscr();
@@ -249,16 +261,20 @@ int main(void) {
     print_config(&config);
 #endif
 
-    for (uint32_t i = 0; i < sizeof ROM; ++i) {
-        emulator.memory[i] = ROM[i];
+    for (uint32_t i = 0; i < rom_size; ++i) {
+        emulator.memory[i] = rom[i];
     }
-    while (emulator.is_halted == 0 && emulator.program_counter < sizeof ROM) {
+    while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
         run_next_emulator_instruction(&emulator, &config);
         print_screen(&emulator, &config);
         usleep(100000);
     }
     print_screen(&emulator, &config);
+end:
     cleanup_config(&config);
+    free(rom_filename);
+    free(filename);
+    free(rom);
     getch();
     endwin();
     return 0;

@@ -473,8 +473,9 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         ret = handle_mov(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
         ;
-    } else if (!strcmp(instruction.mnemonic, "HLT")) {
-        ret = emulator->is_halted = 1;
+    } else if (!strcmp(instruction.mnemonic, "HALT")) {
+        emulator->is_halted = 1;
+        ret = 0;
     } else if (!strcmp(instruction.mnemonic, "MOVAT")) {
         ret = handle_movat(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "ADD")) {
