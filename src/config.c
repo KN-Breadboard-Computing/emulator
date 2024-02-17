@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+void (*log_func)(log_level ll, const char *format, ...) = NULL;
 
 int print_config(Config *config) {
     for (int i = 0; i < INST_SET_SIZE; i++) {
@@ -37,8 +38,11 @@ int load_config(Config *config, const char *const filename) {
     // 1. Parse the config json file using cJSON
     // 2. Fill the config struct
     FILE *config_file = fopen(filename, "r");
-    if (config_file == NULL)
+    if (config_file == NULL) {
+        if (log_func != NULL)
+            log_func(ERROR, "File not found\n");
         return 1;
+    }
     char *buffer;
     unsigned length;
     fseek(config_file, 0, SEEK_END);
@@ -52,10 +56,18 @@ int load_config(Config *config, const char *const filename) {
     free(buffer);
     if (conf == NULL) {
         cJSON_Delete(conf);
+        if (log_func != NULL)
+            log_func(ERROR, "Invalid JSON\n");
         return 2;
     }
     cJSON *inst;
     inst = conf->child;
+    if (inst == NULL) {
+        cJSON_Delete(conf);
+        if (log_func != NULL)
+            log_func(ERROR, "Invalid JSON\n");
+        return 2;
+    }
     while (inst != NULL) {
         int opcode = hash_instruction(cJSON_GetStringValue(cJSON_GetObjectItem(inst, "opcode")));
         char *mnemonic = cJSON_GetStringValue(cJSON_GetObjectItem(inst, "mnemonic"));
@@ -77,7 +89,7 @@ int load_config(Config *config, const char *const filename) {
         unsigned it = 0;
         cJSON_ArrayForEach(operand, operands_arr) {
             char *opp = cJSON_GetStringValue(operand);
-            config->instructions[opcode]->operands[it] = (char *)malloc(sizeof(opp));
+            config->instructions[opcode]->operands[it] = (char *)malloc(strlen(opp) + 1);
             strcpy(config->instructions[opcode]->operands[it], opp);
             it++;
         }

@@ -1,8 +1,5 @@
 #include "emulator.h"
-#include "config.h"
-#include <stdbool.h>
 #include <string.h>
-void (*log_func)(const char *, ...);
 
 void init_emulator(Emulator *emulator) {
     emulator->a_register = 0;
@@ -460,7 +457,7 @@ int handle_jmprel(Emulator *emulator, Instruction instruction) {
 int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
     emulator->clock_cycles_counter += instruction.cycle_count;
-#ifdef DEBUG
+#ifdef DBG
     printf("\nrunning instruction: %s\n", instruction.mnemonic);
     printf("operands: ");
     for (unsigned i = 0; i < instruction.num_operands; i++) {
@@ -514,10 +511,13 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         ret = handle_push(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "POP")) {
         ret = handle_pop(emulator, instruction);
-    } else if (!strcmp(instruction.mnemonic, "SKP")) {
-        //(*log_func)("(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
+    } else if (!strcmp(instruction.mnemonic, "SKIP")) {
+        if (log_func != NULL) {
+            log_func(INFO, "(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
+        }
     } else {
-        //(*log_func)("not implemented yet :<<\n");
+        if (log_func != NULL)
+            log_func(INFO, "%s is not implemented yet :<<\n", instruction.mnemonic);
         for (unsigned i = 0; i < instruction.num_operands; ++i) {
             if (!strcmp(instruction.operands[i], "CONST") || !strcmp(instruction.operands[i], "MEM8"))
                 emulator->program_counter++;
@@ -536,10 +536,16 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
  */
 int run_next_emulator_instruction(Emulator *emulator, Config *config) {
     Instruction *instruction = config->instructions[emulator->memory[emulator->program_counter]];
-    if (instruction == NULL)
+    if (instruction == NULL) {
+        if (log_func != NULL)
+            log_func(ERROR, "Instruction: %x is missing from config\n", emulator->memory[emulator->program_counter]);
         return 1;
-    if (emulator->is_halted)
+    }
+    if (emulator->is_halted) {
+        if (log_func != NULL)
+            log_func(INFO, "Processor is halted\n");
         return 2;
+    }
     emulator->program_counter++;
     return run_instruction(emulator, *instruction);
 }

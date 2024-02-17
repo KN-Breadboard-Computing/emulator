@@ -183,15 +183,6 @@ void print_frame(void) {
     }
 }
 
-/*
-void handle_log(const char *format, ...) {
-    va_list args;
-    va_start(args, format);
-
-    va_end(args);
-
-}
-*/
 void print_screen(Emulator *emulator, Config *config) {
     clear();
     getmaxyx(stdscr, max_y, max_x);
@@ -219,36 +210,40 @@ int main(int argc, char **argv) {
             printf("-f\tSpecify path to ROM file\n");
             return 0;
         case 'i':
-            printf("Instruction set file: %s\n", optarg);
+            console_log(DEBUG, "Instruction set file: %s\n", optarg);
             filename = malloc(strlen(optarg) + 1);
             strcpy(filename, optarg);
             break;
         case 'f':
-            printf("SAMPLE_ROM file: %s\n", optarg);
+            console_log(DEBUG, "ROM file: %s\n", optarg);
             rom_filename = malloc(strlen(optarg) + 1);
             strcpy(rom_filename, optarg);
             break;
         case ':':
             printf("option needs a value\n");
-            break;
+            return 0;
         default:
             printf("unknown option: %c\n", cmd_opt);
-            break;
+            return 0;
         }
     }
     // emulator setup
+    log_func = &console_log;
     Emulator emulator;
     Config config;
     if (filename == NULL) {
-        printf("No instruction set file specified, using default\n");
+        console_log(INFO, "No instruction set file specified, using default\n");
         filename = malloc(strlen("instructions.json") + 1);
         strcpy(filename, "instructions.json");
     }
-
-    load_config(&config, filename);
-    // log_func = &handle_log
+    // log_func = &console_log
     if (!load_rom(&rom, &rom_size, rom_filename)) {
-        printf("could not load rom\n");
+        console_log(ERROR, "could not load rom\n");
+        goto end;
+    }
+    int ret = load_config(&config, filename);
+    if (ret != 0) {
+        console_log(ERROR, "could not load config err: %d\n", ret);
         goto end;
     }
 
@@ -257,7 +252,7 @@ int main(int argc, char **argv) {
     initscr();
     keypad(stdscr, TRUE);
 
-#ifdef DEBUG
+#ifdef DBG
     print_config(&config);
 #endif
 
@@ -265,7 +260,9 @@ int main(int argc, char **argv) {
         emulator.memory[i] = rom[i];
     }
     while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
-        run_next_emulator_instruction(&emulator, &config);
+        if (run_next_emulator_instruction(&emulator, &config) != 0) {
+            break;
+        }
         print_screen(&emulator, &config);
         usleep(100000);
     }

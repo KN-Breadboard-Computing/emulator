@@ -6,7 +6,7 @@
 #include <stdio.h>
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
-#define DEBUG
+#define DBG
 
 typedef struct {
     union {
@@ -45,8 +45,6 @@ typedef struct {
         uint16_t *mem16;
     };
 } MemPtr;
-
-extern void (*log_func)(const char *, ...);
 
 void init_emulator(Emulator *emulator);
 
