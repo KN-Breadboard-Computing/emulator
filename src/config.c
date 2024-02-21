@@ -19,7 +19,7 @@ int print_config(Config *config) {
 }
 
 // Hashes by turning the binary string into it's decimal representation
-int hash_instruction(const char *binary_string) {
+static int hash_instruction(const char *binary_string) {
     int result = 0;
     for (int i = 0; i < 10; i++) {
         if (binary_string[i] == '\0')

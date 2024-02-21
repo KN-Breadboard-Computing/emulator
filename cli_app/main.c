@@ -10,6 +10,7 @@
 
 typedef enum { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
 
+LogVector default_log_vector;
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
 static Memory_view_mode current_memory_view_mode[2] = {ASCII, HEX};
@@ -168,7 +169,11 @@ void print_console(void) {
     }
     y++;
     mvprintw(y++, x, "Console:");
-    mvprintw(y++, x, "TODO");
+    char *buffer = NULL;
+    while (get_log(&default_log_vector, &buffer) != -1) {
+        mvprintw(y++, x + 1, "%s", buffer);
+    }
+    free(buffer);
 }
 
 void print_frame(void) {
@@ -199,6 +204,7 @@ int main(int argc, char **argv) {
     unsigned rom_size;
     char *filename = NULL;
     char *rom_filename = NULL;
+    init_log_vector(&default_log_vector, 7);
     while ((cmd_opt = getopt(argc, argv, "hi:f:")) != -1) {
         switch (cmd_opt) {
         case 'h':
@@ -210,12 +216,12 @@ int main(int argc, char **argv) {
             printf("-f\tSpecify path to ROM file\n");
             return 0;
         case 'i':
-            console_log(DEBUG, "Instruction set file: %s\n", optarg);
+            console_log(DEBUG, "Instruction set file: %s", optarg);
             filename = malloc(strlen(optarg) + 1);
             strcpy(filename, optarg);
             break;
         case 'f':
-            console_log(DEBUG, "ROM file: %s\n", optarg);
+            console_log(DEBUG, "ROM file: %s", optarg);
             rom_filename = malloc(strlen(optarg) + 1);
             strcpy(rom_filename, optarg);
             break;
@@ -232,7 +238,7 @@ int main(int argc, char **argv) {
     Emulator emulator;
     Config config;
     if (filename == NULL) {
-        console_log(INFO, "No instruction set file specified, using default\n");
+        console_log(WARNING, "No instruction set file specified, using default filename\n");
         filename = malloc(strlen("instructions.json") + 1);
         strcpy(filename, "instructions.json");
     }
@@ -266,9 +272,11 @@ int main(int argc, char **argv) {
         print_screen(&emulator, &config);
         usleep(100000);
     }
+    console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
 end:
     cleanup_config(&config);
+    free_log_vector(&default_log_vector);
     free(rom_filename);
     free(filename);
     free(rom);

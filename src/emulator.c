@@ -21,7 +21,7 @@ void init_emulator(Emulator *emulator) {
     }
 }
 
-bool check_flags(Emulator *emulator, const char *flag) {
+static bool check_flags(Emulator *emulator, const char *flag) {
     if (flag[0] == '\0')
         return true;
     bool ret;
@@ -49,7 +49,7 @@ bool check_flags(Emulator *emulator, const char *flag) {
     }
 }
 
-void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_sub) {
+static void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_sub) {
     emulator->flag_register = 0;
     // sign flag
     if (after >> 7 == 1)
@@ -69,9 +69,9 @@ void calculate_flags(Emulator *emulator, uint8_t before, uint8_t after, bool is_
         emulator->flag_register |= 0b00001000;
 }
 
-uint8_t *fetch_next_byte(Emulator *emulator) { return &emulator->memory[emulator->program_counter++]; }
+static uint8_t *fetch_next_byte(Emulator *emulator) { return &emulator->memory[emulator->program_counter++]; }
 
-MemPtr process_operand(Emulator *emulator, const char *operand) {
+static MemPtr process_operand(Emulator *emulator, const char *operand) {
     MemPtr ret;
     ret.mem16 = NULL;
     ret.mem8 = NULL;
@@ -117,7 +117,7 @@ MemPtr process_operand(Emulator *emulator, const char *operand) {
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
-int handle_mov(Emulator *emulator, Instruction instruction) {
+static int handle_mov(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr des_op = process_operand(emulator, instruction.operands[0]);
@@ -128,7 +128,7 @@ int handle_mov(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_inc(Emulator *emulator, Instruction instruction) {
+static int handle_inc(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr des_op = process_operand(emulator, instruction.operands[0]);
@@ -141,7 +141,7 @@ int handle_inc(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_movat(Emulator *emulator, Instruction instruction) {
+static int handle_movat(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr src_op = process_operand(emulator, instruction.operands[0]);
@@ -157,7 +157,7 @@ int handle_movat(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_dec(Emulator *emulator, Instruction instruction) {
+static int handle_dec(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr des_op = process_operand(emulator, instruction.operands[0]);
@@ -170,7 +170,7 @@ int handle_dec(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_neg(Emulator *emulator, Instruction instruction) {
+static int handle_neg(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -188,7 +188,7 @@ int handle_neg(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_inv(Emulator *emulator, Instruction instruction) {
+static int handle_inv(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -206,7 +206,7 @@ int handle_inv(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_or(Emulator *emulator, Instruction instruction) {
+static int handle_or(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -224,7 +224,7 @@ int handle_or(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_and(Emulator *emulator, Instruction instruction) {
+static int handle_and(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -242,7 +242,7 @@ int handle_and(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_xor(Emulator *emulator, Instruction instruction) {
+static int handle_xor(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -260,7 +260,7 @@ int handle_xor(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_shl(Emulator *emulator, Instruction instruction) {
+static int handle_shl(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -278,7 +278,7 @@ int handle_shl(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_div(Emulator *emulator, Instruction instruction) {
+static int handle_div(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -298,7 +298,7 @@ int handle_div(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_shr(Emulator *emulator, Instruction instruction) {
+static int handle_shr(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -316,7 +316,7 @@ int handle_shr(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_add(Emulator *emulator, Instruction instruction) {
+static int handle_add(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr adr_op = process_operand(emulator, instruction.operands[0]);
@@ -334,7 +334,7 @@ int handle_add(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_sub(Emulator *emulator, Instruction instruction) {
+static int handle_sub(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 3)
         return 1;
     MemPtr minuend = process_operand(emulator, instruction.operands[1]);
@@ -354,7 +354,7 @@ int handle_sub(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_cmp(Emulator *emulator, Instruction instruction) {
+static int handle_cmp(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 2)
         return 1;
     MemPtr minuend = process_operand(emulator, instruction.operands[0]);
@@ -381,7 +381,7 @@ int handle_cmp(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_clr(Emulator *emulator, Instruction instruction) {
+static int handle_clr(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
@@ -392,7 +392,7 @@ int handle_clr(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_pop(Emulator *emulator, Instruction instruction) {
+static int handle_pop(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
@@ -408,7 +408,7 @@ int handle_pop(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_push(Emulator *emulator, Instruction instruction) {
+static int handle_push(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
@@ -424,7 +424,7 @@ int handle_push(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_jmpimm(Emulator *emulator, Instruction instruction) {
+static int handle_jmpimm(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
@@ -437,7 +437,7 @@ int handle_jmpimm(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
-int handle_jmprel(Emulator *emulator, Instruction instruction) {
+static int handle_jmprel(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
@@ -458,12 +458,12 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
     emulator->instruction_counter++;
     emulator->clock_cycles_counter += instruction.cycle_count;
 #ifdef DBG
-    printf("\nrunning instruction: %s\n", instruction.mnemonic);
-    printf("operands: ");
+    log_func(DEBUG, "running instruction: %s", instruction.mnemonic);
+    log_func(NONE, "operands: ");
     for (unsigned i = 0; i < instruction.num_operands; i++) {
-        printf("%s ", instruction.operands[i]);
+        log_func(NONE, "%s ", instruction.operands[i]);
     }
-    printf("clock cycles: %u\n", instruction.cycle_count);
+    log_func(NONE, "clock cycles: %u\n", instruction.cycle_count);
 #endif
     int ret = 0;
     if (!strcmp(instruction.mnemonic, "MOV")) {
@@ -513,7 +513,8 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         ret = handle_pop(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKIP")) {
         if (log_func != NULL) {
-            log_func(INFO, "(skip) A: signed: %d unsigned: %u\n", emulator->signed_a_register, emulator->a_register);
+            log_func(INFO, "(skip) A: (s %d u: %u), B: (s %d u: %u)", emulator->signed_a_register, emulator->a_register,
+                     emulator->signed_b_register, emulator->b_register);
         }
     } else {
         if (log_func != NULL)
@@ -538,12 +539,12 @@ int run_next_emulator_instruction(Emulator *emulator, Config *config) {
     Instruction *instruction = config->instructions[emulator->memory[emulator->program_counter]];
     if (instruction == NULL) {
         if (log_func != NULL)
-            log_func(ERROR, "Instruction: %x is missing from config\n", emulator->memory[emulator->program_counter]);
+            log_func(ERROR, "Instruction: %x is missing from config", emulator->memory[emulator->program_counter]);
         return 1;
     }
     if (emulator->is_halted) {
         if (log_func != NULL)
-            log_func(INFO, "Processor is halted\n");
+            log_func(INFO, "Processor is halted");
         return 2;
     }
     emulator->program_counter++;

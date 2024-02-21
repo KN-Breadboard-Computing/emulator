@@ -19,7 +19,7 @@ typedef struct {
  * 0 - 0K
  * 1 - file not found
  */
-typedef enum { INFO, WARNING, ERROR, DEBUG } log_level;
+typedef enum { INFO, WARNING, ERROR, DEBUG, NONE } log_level;
 
 extern void (*log_func)(log_level ll, const char *format, ...);
 

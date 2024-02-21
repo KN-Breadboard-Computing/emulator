@@ -6,7 +6,6 @@
 #include <stdio.h>
 #define STACK_SIZE 65536
 #define MEMORY_SIZE 65536
-#define DBG
 
 typedef struct {
     union {

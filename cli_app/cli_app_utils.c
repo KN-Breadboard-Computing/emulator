@@ -27,9 +27,10 @@ const uint8_t SAMPLE_ROM[] = {
     0b10010100, // inc b
     0b00010001, // MOVAIMM 20
     20,
+    0b11010101, // skip
     0b10000010, // CMPAB
     0b10100010, // JMPIMMZ
-    31,         0,
+    32,         0,
     0b11000110, // PUSH b
     0b10011001, // JMPIMM 3
     3,          0,
@@ -37,6 +38,58 @@ const uint8_t SAMPLE_ROM[] = {
     0b00000000,
 
 };
+
+void init_log_vector(LogVector *log_vector, unsigned displayable_amount) {
+    log_vector->size = 0;
+    log_vector->allocated_size = 2;
+    log_vector->messages = (char **)malloc(log_vector->allocated_size * sizeof(char *));
+    log_vector->allocated_messages_size = (unsigned long *)calloc(log_vector->allocated_size, sizeof(unsigned long));
+    log_vector->displayable_amount = displayable_amount;
+    log_vector->current_message = 0;
+}
+
+void add_log(LogVector *log_vector, char *message) {
+    if (log_vector->size >= log_vector->allocated_size) {
+        log_vector->messages = realloc(log_vector->messages, (log_vector->allocated_size * 2) * sizeof(char *));
+        log_vector->allocated_messages_size =
+            realloc(log_vector->allocated_messages_size, (log_vector->allocated_size * 2) * sizeof(unsigned long));
+        for (unsigned i = log_vector->allocated_size; i < log_vector->allocated_size * 2; i++) {
+            log_vector->allocated_messages_size[i] = 0;
+        }
+        for (unsigned i = log_vector->allocated_size; i < log_vector->allocated_size * 2; i++) {
+            log_vector->messages[i] = NULL;
+        }
+        log_vector->allocated_size *= 2;
+    }
+    if (log_vector->allocated_messages_size[log_vector->size] <= (strlen(message) + 1)) {
+        log_vector->messages[log_vector->size] =
+            (char *)realloc(log_vector->messages[log_vector->size], strlen(message) + 1);
+        log_vector->allocated_messages_size[log_vector->size] = strlen(message) + 1;
+    }
+    strcpy(log_vector->messages[log_vector->size], message);
+    log_vector->size++;
+    log_vector->current_message += log_vector->size > log_vector->displayable_amount ? 1 : 0;
+}
+
+int get_log(LogVector *log_vector, char **buffer) {
+    if (log_vector->size <= log_vector->current_message) {
+        log_vector->current_message =
+            log_vector->size > log_vector->displayable_amount ? log_vector->size - log_vector->displayable_amount : 0;
+        return -1;
+    }
+    *buffer = (char *)realloc(*buffer, strlen(log_vector->messages[log_vector->current_message]) + 1);
+    strcpy(*buffer, log_vector->messages[log_vector->current_message]);
+    log_vector->current_message++;
+    return 0;
+}
+
+void free_log_vector(LogVector *log_vector) {
+    for (unsigned i = 0; i < log_vector->allocated_size; i++) {
+        free(log_vector->messages[i]);
+    }
+    free(log_vector->messages);
+    free(log_vector->allocated_messages_size);
+}
 
 bool load_rom(uint8_t **rom, unsigned *rom_size, const char *filename) {
     if (filename == NULL) {
@@ -68,22 +121,42 @@ void console_log(log_level ll, const char *restrict format, ...) {
     va_copy(args_copy, args);
     unsigned size = (unsigned)vsnprintf(NULL, 0, format, args_copy) + 1;
     va_end(args_copy);
-    char *result = (char *)malloc(size);
-    vsprintf(result, format, args);
-    // TODO
+    char *result;
+    const char *info_prefix = "[INFO] ";
+    const char *warning_prefix = "[WARNING] ";
+    const char *error_prefix = "[ERROR] ";
+    const char *debug_prefix = "[DEBUG] ";
+    unsigned long offset = 0;
     switch (ll) {
     case INFO:
-        printf("INFO: %s", result);
+        offset = strlen(info_prefix);
+        result = (char *)malloc(size + offset);
+        strcpy(result, info_prefix);
         break;
     case WARNING:
-        printf("WARNING: %s", result);
+        offset = strlen(warning_prefix);
+        result = (char *)malloc(size + offset);
+        strcpy(result, warning_prefix);
         break;
     case ERROR:
-        printf("ERROR: %s", result);
+        offset = strlen(error_prefix);
+        result = (char *)malloc(size + offset);
+        strcpy(result, error_prefix);
         break;
     case DEBUG:
-        printf("DEBUG: %s", result);
+        offset = strlen(debug_prefix);
+        result = (char *)malloc(size + offset);
+        strcpy(result, debug_prefix);
         break;
+    default:
+        result = (char *)malloc(size);
+        break;
+    }
+    vsprintf((result + offset), format, args);
+    if (default_log_vector.messages == NULL) {
+        printf("%s\n", result);
+    } else {
+        add_log(&default_log_vector, result);
     }
     free(result);
     va_end(args);
