@@ -9,12 +9,14 @@
 #define y_frame_character '|'
 
 typedef enum { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
+typedef enum {NORMAL,INSERT,VISUAL,COMMAND}Mode;
 
 LogVector default_log_vector;
+static Mode current_mode=NORMAL;
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
 static Memory_view_mode current_memory_view_mode[2] = {ASCII, HEX};
-
+static bool is_running=true;
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
     x = def_x;
@@ -168,12 +170,30 @@ void print_console(void) {
         mvaddch(y, i, x_frame_character);
     }
     y++;
-    mvprintw(y++, x, "Console:");
+    mvprintw(y++, x, "Console: %u",current_mode);
     char *buffer = NULL;
     while (get_log(&default_log_vector, &buffer) != -1) {
         mvprintw(y++, x + 1, "%s", buffer);
     }
     free(buffer);
+}
+
+void print_stack(Emulator *emulator) {
+    int def_x = max_x - 30, def_y = max_y - 15;
+    x = def_x;
+    y = def_y;
+    for (int i = y; i < max_y - 1; ++i) {
+        mvaddch(i, x - 2, y_frame_character);
+    }
+    mvprintw(++y, x, "STACK:");
+    if (emulator->stack_pointer == 0) {
+        mvprintw(++y, x + 1, "EMPTY");
+        return;
+    }
+    for (int i = 0; i < emulator->stack_pointer; ++i) {
+        mvprintw(++y,x +2,"%d",emulator->stack[i]);
+    }
+    mvaddch(y,x,'>');
 }
 
 void print_frame(void) {
@@ -194,8 +214,34 @@ void print_screen(Emulator *emulator, Config *config) {
     print_frame();
     print_emulator_status(emulator);
     print_memory(emulator);
+    print_stack(emulator);
     print_console();
     refresh();
+}
+void handle_input(void){
+    int input = getch();
+    mvprintw(max_y-3,3,"%d",input);
+    switch (current_mode) {
+    case NORMAL:
+        switch (input) {
+        case 'i':
+            current_mode = INSERT;
+            break;
+        case ' ':
+            is_running = !is_running;
+            break;
+        }
+        break;
+    case INSERT:
+        break;
+    case VISUAL:
+        break;
+    case COMMAND:
+        break;
+    }
+    if (input == 27) {
+        current_mode = NORMAL;
+    }
 }
 
 int main(int argc, char **argv) {
@@ -238,7 +284,7 @@ int main(int argc, char **argv) {
     Emulator emulator;
     Config config;
     if (filename == NULL) {
-        console_log(WARNING, "No instruction set file specified, using default filename\n");
+        console_log(WARNING, "No instruction set file specified, using default filename");
         filename = malloc(strlen("instructions.json") + 1);
         strcpy(filename, "instructions.json");
     }
@@ -257,7 +303,7 @@ int main(int argc, char **argv) {
     // ncurses setup
     initscr();
     keypad(stdscr, TRUE);
-
+    nodelay(stdscr,TRUE);
 #ifdef DBG
     print_config(&config);
 #endif
@@ -266,15 +312,19 @@ int main(int argc, char **argv) {
         emulator.memory[i] = rom[i];
     }
     while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
+        handle_input();
+        print_screen(&emulator, &config);
+        usleep(100000);
+        if (!is_running)
+            continue;
         if (run_next_emulator_instruction(&emulator, &config) != 0) {
             break;
         }
-        print_screen(&emulator, &config);
-        usleep(100000);
     }
     console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
 end:
+    nodelay(stdscr,FALSE);
     cleanup_config(&config);
     free_log_vector(&default_log_vector);
     free(rom_filename);

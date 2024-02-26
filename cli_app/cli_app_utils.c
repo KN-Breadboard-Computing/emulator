@@ -35,7 +35,7 @@ const uint8_t SAMPLE_ROM[] = {
     0b10011001, // JMPIMM 3
     3,          0,
     0b11011000, // HALT
-    0b00000000,
+    0b00000000,1
 
 };
 
