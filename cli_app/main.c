@@ -5,18 +5,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #define x_frame_character '#'
 #define y_frame_character '|'
 
 typedef enum { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
-typedef enum {NORMAL,INSERT,VISUAL,COMMAND}Mode;
 
+typedef enum { NORMAL, INSERT, VISUAL, COMMAND } Mode;
+
+char command[256];
+uint8_t command_index = 0;
 LogVector default_log_vector;
-static Mode current_mode=NORMAL;
+static Mode current_mode = NORMAL;
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
-static Memory_view_mode current_memory_view_mode[2] = {ASCII, HEX};
-static bool is_running=true;
+static Memory_view_mode current_memory_view_mode[2] = {HEX, ASCII};
+static bool is_running = true;
+
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
     x = def_x;
@@ -170,12 +175,14 @@ void print_console(void) {
         mvaddch(y, i, x_frame_character);
     }
     y++;
-    mvprintw(y++, x, "Console: %u",current_mode);
+    mvprintw(y++, x, "Console: %u", current_mode);
     char *buffer = NULL;
     while (get_log(&default_log_vector, &buffer) != -1) {
         mvprintw(y++, x + 1, "%s", buffer);
     }
     free(buffer);
+    if (current_mode == COMMAND)
+        mvprintw(y, x + 1, ":%s", command);
 }
 
 void print_stack(Emulator *emulator) {
@@ -191,9 +198,9 @@ void print_stack(Emulator *emulator) {
         return;
     }
     for (int i = 0; i < emulator->stack_pointer; ++i) {
-        mvprintw(++y,x +2,"%d",emulator->stack[i]);
+        mvprintw(++y, x + 2, "%d", emulator->stack[i]);
     }
-    mvaddch(y,x,'>');
+    mvaddch(y, x, '>');
 }
 
 void print_frame(void) {
@@ -218,9 +225,11 @@ void print_screen(Emulator *emulator, Config *config) {
     print_console();
     refresh();
 }
-void handle_input(void){
+
+void handle_input(Debugger *debugger, Emulator *emulator) {
     int input = getch();
-    mvprintw(max_y-3,3,"%d",input);
+    // const char *input_str = keyname(input);
+    // console_log(DEBUG, "input: %d %s", input, input_str);
     switch (current_mode) {
     case NORMAL:
         switch (input) {
@@ -230,13 +239,38 @@ void handle_input(void){
         case ' ':
             is_running = !is_running;
             break;
+        case ':':
+            command_index = 0;
+            command[command_index] = '\0';
+            current_mode = COMMAND;
+            break;
         }
+
         break;
     case INSERT:
         break;
     case VISUAL:
         break;
     case COMMAND:
+        if (command_index > 253) {
+            command_index = 0;
+            current_mode = NORMAL;
+            command[command_index] = '\0';
+            break;
+        }
+        if (input == 10) {
+            command[command_index] = '\0';
+            execute_command(debugger, emulator, command);
+            command_index = 0;
+            current_mode = NORMAL;
+            break;
+        }
+        if (input == KEY_BACKSPACE) {
+            command_index--;
+        }
+        if (input > 31 && input < 127)
+            command[command_index++] = (char)input;
+        command[command_index] = '\0';
         break;
     }
     if (input == 27) {
@@ -282,6 +316,7 @@ int main(int argc, char **argv) {
     // emulator setup
     log_func = &console_log;
     Emulator emulator;
+    Debugger debugger;
     Config config;
     if (filename == NULL) {
         console_log(WARNING, "No instruction set file specified, using default filename");
@@ -300,10 +335,11 @@ int main(int argc, char **argv) {
     }
 
     init_emulator(&emulator);
+    init_debugger(&debugger);
     // ncurses setup
     initscr();
     keypad(stdscr, TRUE);
-    nodelay(stdscr,TRUE);
+    nodelay(stdscr, TRUE);
 #ifdef DBG
     print_config(&config);
 #endif
@@ -312,9 +348,11 @@ int main(int argc, char **argv) {
         emulator.memory[i] = rom[i];
     }
     while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
-        handle_input();
+        handle_input(&debugger, &emulator);
         print_screen(&emulator, &config);
         usleep(100000);
+        if (check_breakpoints(&debugger, &emulator))
+            is_running = false;
         if (!is_running)
             continue;
         if (run_next_emulator_instruction(&emulator, &config) != 0) {
@@ -324,7 +362,8 @@ int main(int argc, char **argv) {
     console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
 end:
-    nodelay(stdscr,FALSE);
+    nodelay(stdscr, FALSE);
+    cleanup_debugger(&debugger);
     cleanup_config(&config);
     free_log_vector(&default_log_vector);
     free(rom_filename);

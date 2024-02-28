@@ -3,39 +3,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-const uint8_t SAMPLE_ROM[] = {
-    0b00010001, // MOVAIMM 16
-    16,
-    0b11000101, // push a
-    0b00010001, // MOVAIMM 1
-    1,
-    0b00010010, // MOVBIMM 67
-    67,
-    0b00111100, // ADDA
-    0b00010010, // MOVBIMM 1
-    1,
-    0b00111100, // ADDA
-    0b00000101, // MOVBA
-    0b00111100, // ADDA
-    0b00111100, // ADDA
-    0b00111100, // ADDA
-    0b01000001, // SUBABA
-    0b01000001, // SUBABA
-    0b01000001, // SUBABA
-    0b11010101, // skip
-    0b11001110, // POP B
-    0b10010100, // inc b
-    0b00010001, // MOVAIMM 20
-    20,
-    0b11010101, // skip
-    0b10000010, // CMPAB
-    0b10100010, // JMPIMMZ
-    32,         0,
-    0b11000110, // PUSH b
-    0b10011001, // JMPIMM 3
-    3,          0,
-    0b11011000, // HALT
-    0b00000000,1
+const uint8_t SAMPLE_ROM[] = {0b00010001, // MOVAIMM 16
+                              16,
+                              0b11000101, // push a
+                              0b00010001, // MOVAIMM 1
+                              1,
+                              0b00010010, // MOVBIMM 67
+                              67,
+                              0b00111100, // ADDA
+                              0b00010010, // MOVBIMM 1
+                              1,
+                              0b00111100, // ADDA
+                              0b00000101, // MOVBA
+                              0b00111100, // ADDA
+                              0b00111100, // ADDA
+                              0b00111100, // ADDA
+                              0b01000001, // SUBABA
+                              0b01000001, // SUBABA
+                              0b01000001, // SUBABA
+                              0b11010101, // skip
+                              0b11001110, // POP B
+                              0b10010100, // inc b
+                              0b00010001, // MOVAIMM 20
+                              20,
+                              0b11010101, // skip
+                              0b10000010, // CMPAB
+                              0b10100010, // JMPIMMZ
+                              32,
+                              0,
+                              0b11000110, // PUSH b
+                              0b10011001, // JMPIMM 3
+                              3,
+                              0,
+                              0b11011000, // HALT
+                              0b00000000,
+                              1
 
 };
 
@@ -148,7 +150,7 @@ void console_log(log_level ll, const char *restrict format, ...) {
         result = (char *)malloc(size + offset);
         strcpy(result, debug_prefix);
         break;
-    default:
+    case NONE:
         result = (char *)malloc(size);
         break;
     }
@@ -163,3 +165,17 @@ void console_log(log_level ll, const char *restrict format, ...) {
 }
 
 #pragma clang diagnostic pop
+
+void init_debugger(Debugger *debugger) { debugger->breakpoints[0] = NULL; }
+
+void cleanup_debugger(Debugger *debugger) {
+    for (unsigned i = 0; debugger->breakpoints[i] != NULL; i++) {
+        free(debugger->breakpoints[i]);
+    }
+}
+
+void execute_command(Debugger *debugger, Emulator *emulator, char *command) {
+    console_log(INFO, "Executing command: %s", command);
+}
+
+bool check_breakpoints(Debugger *debugger, Emulator *emulator) { return false; }
