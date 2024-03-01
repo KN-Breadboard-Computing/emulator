@@ -1,4 +1,5 @@
 #include "cli_app_utils.h"
+#include "commands.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -166,16 +167,38 @@ void console_log(log_level ll, const char *restrict format, ...) {
 
 #pragma clang diagnostic pop
 
-void init_debugger(Debugger *debugger) { debugger->breakpoints[0] = NULL; }
-
-void cleanup_debugger(Debugger *debugger) {
-    for (unsigned i = 0; debugger->breakpoints[i] != NULL; i++) {
-        free(debugger->breakpoints[i]);
-    }
-}
-
 void execute_command(Debugger *debugger, Emulator *emulator, char *command) {
-    console_log(INFO, "Executing command: %s", command);
+    char *rest = command;
+    unsigned size;
+    for (size = 0; command[size] != '\0'; command[size] == ' ' ? size++ : (unsigned)*command++)
+        ;
+    char *cmd = strtok_r(rest, " ", &rest);
+    char **args = (char **)malloc(size * sizeof(char *) + 1);
+    for (unsigned i = 0; i < size; i++) {
+        char *arg = strtok_r(rest, " ", &rest);
+        args[i] = malloc(strlen(arg) + 1);
+        strcpy(args[i], arg);
+    }
+    if (!strcmp(cmd, "break")) {
+        handle_break(debugger, size, args);
+    } else if (!strcmp(cmd, "run")) {
+        handle_run(debugger);
+    } else if (!strcmp(cmd, "step")) {
+        //  handle_step(emulator);
+    } else if (!strcmp(cmd, "quit")) {
+        // handle_quit(debugge);
+    } else {
+        console_log(ERROR, "Unknown command: %s", cmd);
+    }
+    for (unsigned i = 0; i < size; i++) {
+        free(args[i]);
+    }
+    free(args);
 }
 
-bool check_breakpoints(Debugger *debugger, Emulator *emulator) { return false; }
+bool call_debugger(Debugger *debugger, Emulator *emulator) {
+    if (check_breakpoints(debugger, emulator)) {
+        debugger->emulator_running = false;
+    }
+    return debugger->emulator_running;
+}

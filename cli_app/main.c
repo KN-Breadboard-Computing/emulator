@@ -20,7 +20,6 @@ static Mode current_mode = NORMAL;
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
 static Memory_view_mode current_memory_view_mode[2] = {HEX, ASCII};
-static bool is_running = true;
 
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
@@ -237,7 +236,7 @@ void handle_input(Debugger *debugger, Emulator *emulator) {
             current_mode = INSERT;
             break;
         case ' ':
-            is_running = !is_running;
+            switch_emulator_running(debugger);
             break;
         case ':':
             command_index = 0;
@@ -351,9 +350,7 @@ int main(int argc, char **argv) {
         handle_input(&debugger, &emulator);
         print_screen(&emulator, &config);
         usleep(100000);
-        if (check_breakpoints(&debugger, &emulator))
-            is_running = false;
-        if (!is_running)
+        if (!call_debugger(&debugger, &emulator))
             continue;
         if (run_next_emulator_instruction(&emulator, &config) != 0) {
             break;
