@@ -156,7 +156,7 @@ void console_log(log_level ll, const char *restrict format, ...) {
         break;
     }
     vsprintf((result + offset), format, args);
-    if (default_log_vector.messages == NULL) {
+    if (default_log_vector.messages == NULL){
         printf("%s\n", result);
     } else {
         add_log(&default_log_vector, result);
@@ -167,11 +167,10 @@ void console_log(log_level ll, const char *restrict format, ...) {
 
 #pragma clang diagnostic pop
 
-void execute_command(Debugger *debugger, Emulator *emulator, char *command) {
+void execute_command(Debugger *debugger, Emulator *emulator,Config *config, char *command) {
     char *rest = command;
     unsigned size;
-    for (size = 0; command[size] != '\0'; command[size] == ' ' ? size++ : (unsigned)*command++)
-        ;
+    for (size = 0; command[size] != '\0'; command[size] == ' ' ? size++ : (unsigned)*command++);
     char *cmd = strtok_r(rest, " ", &rest);
     char **args = (char **)malloc(size * sizeof(char *) + 1);
     for (unsigned i = 0; i < size; i++) {
@@ -179,14 +178,20 @@ void execute_command(Debugger *debugger, Emulator *emulator, char *command) {
         args[i] = malloc(strlen(arg) + 1);
         strcpy(args[i], arg);
     }
-    if (!strcmp(cmd, "break")) {
+    if ((!strcmp(cmd, "break"))||(!strcmp(cmd, "br"))) {
         handle_break(debugger, size, args);
-    } else if (!strcmp(cmd, "run")) {
+    }else if ((!strcmp(cmd, "clear"))||(!strcmp(cmd, "brc"))) {
+        handle_clear(debugger);
+    } else if ((!strcmp(cmd, "remove"))||(!strcmp(cmd, "brr"))) {
+        handle_remove(debugger, size, args);
+    }else if ((!strcmp(cmd, "list")||(!strcmp(cmd, "brl")))) {
+        handle_list(debugger, size, args);
+    }else if (!strcmp(cmd, "run")) {
         handle_run(debugger);
     } else if (!strcmp(cmd, "step")) {
-        //  handle_step(emulator);
+          handle_step(emulator,config);
     } else if (!strcmp(cmd, "quit")) {
-        // handle_quit(debugge);
+        //  handle_quit(debugger);
     } else {
         console_log(ERROR, "Unknown command: %s", cmd);
     }

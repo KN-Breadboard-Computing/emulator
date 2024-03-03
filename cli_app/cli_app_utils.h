@@ -31,4 +31,4 @@ void console_log(log_level ll, const char *format, ...);
 
 bool call_debugger(Debugger *debugger, Emulator *emulator);
 
-void execute_command(Debugger *debugger, Emulator *emulator, char *command);
+void execute_command(Debugger *debugger, Emulator *emulator,Config *config ,char *command);

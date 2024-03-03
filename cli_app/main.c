@@ -9,9 +9,13 @@
 #define x_frame_character '#'
 #define y_frame_character '|'
 
-typedef enum { HEX, DEC, DEC_SIGNED, INST, ASCII } Memory_view_mode;
+typedef enum {
+    HEX, DEC, DEC_SIGNED, INST, ASCII
+} Memory_view_mode;
 
-typedef enum { NORMAL, INSERT, VISUAL, COMMAND } Mode;
+typedef enum {
+    NORMAL, INSERT, VISUAL, COMMAND
+} Mode;
 
 char command[256];
 uint8_t command_index = 0;
@@ -63,21 +67,21 @@ void print_memory(Emulator *emulator) {
     // print labels
     for (int i = 0; i < memory_tables_count; ++i) {
         switch (current_memory_view_mode[i]) {
-        case HEX:
-            mvprintw(y, x, "HEX");
-            break;
-        case DEC:
-            mvprintw(y, x, "DEC");
-            break;
-        case DEC_SIGNED:
-            mvprintw(y, x, "DEC_SIGNED");
-            break;
-        case INST:
-            mvprintw(y, x, "INST");
-            break;
-        case ASCII:
-            mvprintw(y, x, "ASCII");
-            break;
+            case HEX:
+                mvprintw(y, x, "HEX");
+                break;
+            case DEC:
+                mvprintw(y, x, "DEC");
+                break;
+            case DEC_SIGNED:
+                mvprintw(y, x, "DEC_SIGNED");
+                break;
+            case INST:
+                mvprintw(y, x, "INST");
+                break;
+            case ASCII:
+                mvprintw(y, x, "ASCII");
+                break;
         }
         x += 16 * spacing[current_memory_view_mode[i]] + 10;
     }
@@ -86,31 +90,31 @@ void print_memory(Emulator *emulator) {
     x = def_x + 2;
     for (int i = 0; i < memory_tables_count; ++i) {
         switch (current_memory_view_mode[i]) {
-        case HEX:
-            for (int j = 0; j < 16; j++) {
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
-            }
-            break;
-        case DEC:
-            for (int j = 0; j < 16; j++) {
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
-            }
-            break;
-        case DEC_SIGNED:
-            for (int j = 0; j < 16; j++) {
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
-            }
-            break;
-        case INST:
-            for (int j = 0; j < 16; j++) {
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
-            }
-            break;
-        case ASCII:
-            for (int j = 0; j < 16; j++) {
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
-            }
-            break;
+            case HEX:
+                for (int j = 0; j < 16; j++) {
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
+                }
+                break;
+            case DEC:
+                for (int j = 0; j < 16; j++) {
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
+                }
+                break;
+            case DEC_SIGNED:
+                for (int j = 0; j < 16; j++) {
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
+                }
+                break;
+            case INST:
+                for (int j = 0; j < 16; j++) {
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
+                }
+                break;
+            case ASCII:
+                for (int j = 0; j < 16; j++) {
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%2X ", j);
+                }
+                break;
         }
         x += spacing_between;
     }
@@ -134,32 +138,33 @@ void print_memory(Emulator *emulator) {
         y = def_y + 3 + k;
         for (int i = 0; i < memory_tables_count; ++i) {
             switch (current_memory_view_mode[i]) {
-            case HEX:
-                for (int j = 0; j < 16; j++) {
-                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%02X ", emulator->memory[j + 16 * k]);
-                }
-                break;
-            case DEC:
-                for (int j = 0; j < 16; j++) {
-                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%u", emulator->memory[j + 16 * k]);
-                }
-            case DEC_SIGNED:
-                for (int j = 0; j < 16; j++) {
-                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "%d", (int8_t)emulator->memory[j + 16 * k]);
-                }
-                break;
-            case INST:
-                mvprintw(y, x += spacing[current_memory_view_mode[i]], "X");
-                x += 5;
-                break;
-            case ASCII:
-                for (int j = 0; j < 16; j++) {
-                    if (emulator->memory[j + 16 * k] > 32)
-                        mvprintw(y, x += spacing[current_memory_view_mode[i]], "%c", emulator->memory[j + 16 * k]);
-                    else
-                        mvaddch(y, x += spacing[current_memory_view_mode[i]], '.');
-                }
-                break;
+                case HEX:
+                    for (int j = 0; j < 16; j++) {
+                        mvprintw(y, x += spacing[current_memory_view_mode[i]], "%02X ", emulator->memory[j + 16 * k]);
+                    }
+                    break;
+                case DEC:
+                    for (int j = 0; j < 16; j++) {
+                        mvprintw(y, x += spacing[current_memory_view_mode[i]], "%u", emulator->memory[j + 16 * k]);
+                    }
+                case DEC_SIGNED:
+                    for (int j = 0; j < 16; j++) {
+                        mvprintw(y, x += spacing[current_memory_view_mode[i]], "%d",
+                                 (int8_t) emulator->memory[j + 16 * k]);
+                    }
+                    break;
+                case INST:
+                    mvprintw(y, x += spacing[current_memory_view_mode[i]], "X");
+                    x += 5;
+                    break;
+                case ASCII:
+                    for (int j = 0; j < 16; j++) {
+                        if (emulator->memory[j + 16 * k] > 32)
+                            mvprintw(y, x += spacing[current_memory_view_mode[i]], "%c", emulator->memory[j + 16 * k]);
+                        else
+                            mvaddch(y, x += spacing[current_memory_view_mode[i]], '.');
+                    }
+                    break;
             }
             x += spacing_between;
         }
@@ -225,52 +230,52 @@ void print_screen(Emulator *emulator, Config *config) {
     refresh();
 }
 
-void handle_input(Debugger *debugger, Emulator *emulator) {
+void handle_input(Debugger *debugger, Emulator *emulator, Config *config) {
     int input = getch();
     // const char *input_str = keyname(input);
     // console_log(DEBUG, "input: %d %s", input, input_str);
     switch (current_mode) {
-    case NORMAL:
-        switch (input) {
-        case 'i':
-            current_mode = INSERT;
-            break;
-        case ' ':
-            switch_emulator_running(debugger);
-            break;
-        case ':':
-            command_index = 0;
-            command[command_index] = '\0';
-            current_mode = COMMAND;
-            break;
-        }
+        case NORMAL:
+            switch (input) {
+                case 'i':
+                    current_mode = INSERT;
+                    break;
+                case ' ':
+                    switch_emulator_running(debugger);
+                    break;
+                case ':':
+                    command_index = 0;
+                    command[command_index] = '\0';
+                    current_mode = COMMAND;
+                    break;
+            }
 
-        break;
-    case INSERT:
-        break;
-    case VISUAL:
-        break;
-    case COMMAND:
-        if (command_index > 253) {
-            command_index = 0;
-            current_mode = NORMAL;
+            break;
+        case INSERT:
+            break;
+        case VISUAL:
+            break;
+        case COMMAND:
+            if (command_index > 253) {
+                command_index = 0;
+                current_mode = NORMAL;
+                command[command_index] = '\0';
+                break;
+            }
+            if (input == 10) {
+                command[command_index] = '\0';
+                execute_command(debugger, emulator, config, command);
+                command_index = 0;
+                current_mode = NORMAL;
+                break;
+            }
+            if (input == KEY_BACKSPACE) {
+                command_index--;
+            }
+            if (input > 31 && input < 127)
+                command[command_index++] = (char) input;
             command[command_index] = '\0';
             break;
-        }
-        if (input == 10) {
-            command[command_index] = '\0';
-            execute_command(debugger, emulator, command);
-            command_index = 0;
-            current_mode = NORMAL;
-            break;
-        }
-        if (input == KEY_BACKSPACE) {
-            command_index--;
-        }
-        if (input > 31 && input < 127)
-            command[command_index++] = (char)input;
-        command[command_index] = '\0';
-        break;
     }
     if (input == 27) {
         current_mode = NORMAL;
@@ -286,30 +291,30 @@ int main(int argc, char **argv) {
     init_log_vector(&default_log_vector, 7);
     while ((cmd_opt = getopt(argc, argv, "hi:f:")) != -1) {
         switch (cmd_opt) {
-        case 'h':
-            printf("Usage: %s -i [FILE] -f [FILE]\n", argv[0]);
-            printf("Emulator of KN Breadboard Computing's custom 8-Bit CPU\n");
-            printf("Options:\n");
-            printf("-h\tShow this help message\n");
-            printf("-i\tSpecify path to instruction set json\n");
-            printf("-f\tSpecify path to ROM file\n");
-            return 0;
-        case 'i':
-            console_log(DEBUG, "Instruction set file: %s", optarg);
-            filename = malloc(strlen(optarg) + 1);
-            strcpy(filename, optarg);
-            break;
-        case 'f':
-            console_log(DEBUG, "ROM file: %s", optarg);
-            rom_filename = malloc(strlen(optarg) + 1);
-            strcpy(rom_filename, optarg);
-            break;
-        case ':':
-            printf("option needs a value\n");
-            return 0;
-        default:
-            printf("unknown option: %c\n", cmd_opt);
-            return 0;
+            case 'h':
+                printf("Usage: %s -i [FILE] -f [FILE]\n", argv[0]);
+                printf("Emulator of KN Breadboard Computing's custom 8-Bit CPU\n");
+                printf("Options:\n");
+                printf("-h\tShow this help message\n");
+                printf("-i\tSpecify path to instruction set json\n");
+                printf("-f\tSpecify path to ROM file\n");
+                return 0;
+            case 'i':
+                console_log(DEBUG, "Instruction set file: %s", optarg);
+                filename = malloc(strlen(optarg) + 1);
+                strcpy(filename, optarg);
+                break;
+            case 'f':
+                console_log(DEBUG, "ROM file: %s", optarg);
+                rom_filename = malloc(strlen(optarg) + 1);
+                strcpy(rom_filename, optarg);
+                break;
+            case ':':
+                printf("option needs a value\n");
+                return 0;
+            default:
+                printf("unknown option: %c\n", cmd_opt);
+                return 0;
         }
     }
     // emulator setup
@@ -347,7 +352,7 @@ int main(int argc, char **argv) {
         emulator.memory[i] = rom[i];
     }
     while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
-        handle_input(&debugger, &emulator);
+        handle_input(&debugger, &emulator, &config);
         print_screen(&emulator, &config);
         usleep(100000);
         if (!call_debugger(&debugger, &emulator))
@@ -358,7 +363,7 @@ int main(int argc, char **argv) {
     }
     console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
-end:
+    end:
     nodelay(stdscr, FALSE);
     cleanup_debugger(&debugger);
     cleanup_config(&config);
