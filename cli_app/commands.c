@@ -60,7 +60,7 @@ void handle_remove(Debugger *debugger, const unsigned argc, char **argv) {
             console_log(ERROR, "No last breakpoint");
             return;
         }
-        remove_breakpoint(debugger, debugger->last_breakpoint->address);
+        remove_breakpoint(debugger, debugger->last_breakpoint->address,ADDRESS);
         return;
     }
     uint16_t address;
@@ -69,7 +69,7 @@ void handle_remove(Debugger *debugger, const unsigned argc, char **argv) {
         has_error = false;
         return;
     }
-    remove_breakpoint(debugger, address);
+    remove_breakpoint(debugger, address,ADDRESS);
 }
 
 void handle_list(Debugger *debugger, const unsigned argc, char **argv) {
@@ -95,3 +95,39 @@ void handle_list(Debugger *debugger, const unsigned argc, char **argv) {
 void handle_run(Debugger *debugger) { debugger->emulator_running = true; }
 
 void handle_step(Emulator *emulator, Config *config) { run_next_emulator_instruction(emulator, config); }
+
+void handle_peek(Emulator*emulator, unsigned argc, char **argv){
+    if (argc < 1) {
+        console_log(ERROR, "Usage: peek <address (0x)HEX|DEC>");
+        return;
+    }
+    uint16_t address;
+    address = get_address(argv[0]);
+        if (has_error) {
+                has_error = false;
+                return;
+        }
+        console_log(INFO, "0x%04X: 0x%02X", address, emulator->memory[address]);
+}
+
+void handle_poke(Emulator*emulator, unsigned argc, char **argv){
+    if (argc < 2) {
+        console_log(ERROR, "Usage: poke <address (0x)HEX|DEC> <value>");
+        return;
+    }
+        uint16_t address;
+        address = get_address(argv[0]);
+        if (has_error) {
+                has_error = false;
+                return;
+        }
+        uint8_t value;
+        value = (uint8_t)get_address(argv[1]);
+        if (has_error) {
+            has_error = false;
+            return;
+        }
+        emulator->memory[address] = value;
+        console_log(INFO,"Changed 0x%04X to 0x%02X", address, value);
+
+}

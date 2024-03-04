@@ -16,3 +16,7 @@ void handle_run(Debugger *debugger);
 
 void handle_step(Emulator *emulator,Config *config);
 
+void handle_peek(Emulator*emulator, unsigned argc, char **argv);
+
+void handle_poke(Emulator*emulator, unsigned argc, char **argv);
+

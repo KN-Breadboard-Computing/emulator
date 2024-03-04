@@ -147,6 +147,7 @@ void print_memory(Emulator *emulator) {
                     for (int j = 0; j < 16; j++) {
                         mvprintw(y, x += spacing[current_memory_view_mode[i]], "%u", emulator->memory[j + 16 * k]);
                     }
+                    break;
                 case DEC_SIGNED:
                     for (int j = 0; j < 16; j++) {
                         mvprintw(y, x += spacing[current_memory_view_mode[i]], "%d",
