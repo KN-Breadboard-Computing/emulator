@@ -19,9 +19,9 @@ const uint8_t SAMPLE_ROM[] = {0b00010001, // MOVAIMM 16
                               0b00111100, // ADDA
                               0b00111100, // ADDA
                               0b00111100, // ADDA
-                              0b01000001, // SUBABA
-                              0b01000001, // SUBABA
-                              0b01000001, // SUBABA
+                              0b01000001, // SUBAAB
+                              0b01000001, // SUBAAB
+                              0b01000001, // SUBAAB
                               0b11010101, // skip
                               0b11001110, // POP B
                               0b10010100, // inc b
@@ -117,7 +117,7 @@ bool load_rom(uint8_t **rom, unsigned *rom_size, const char *filename) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
 
-void console_log(log_level ll, const char *restrict format, ...) {
+void console_log(LogLevel ll, const char *restrict format, ...) {
     va_list args;
     va_start(args, format);
     va_list args_copy;

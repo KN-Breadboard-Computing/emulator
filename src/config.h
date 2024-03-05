@@ -19,9 +19,9 @@ typedef struct {
  * 0 - 0K
  * 1 - file not found
  */
-typedef enum { INFO, WARNING, ERROR, DEBUG, NONE } log_level;
+typedef enum { INFO, WARNING, ERROR, DEBUG, NONE } LogLevel;
 
-extern void (*log_func)(log_level ll, const char *format, ...);
+extern void (*log_func)(LogLevel ll, const char *format, ...);
 
 int load_config(Config *config, const char *filename);
 

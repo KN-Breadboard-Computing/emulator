@@ -27,8 +27,8 @@ void free_log_vector(LogVector *log_vector);
 
 bool load_rom(uint8_t **rom, unsigned *rom_size, const char *filename);
 
-void console_log(log_level ll, const char *format, ...);
+void console_log(LogLevel ll, const char *format, ...);
 
 bool call_debugger(Debugger *debugger, Emulator *emulator);
 
-void execute_command(Debugger *debugger, Emulator *emulator,Config *config ,char *command);
+void execute_command(Debugger *debugger, Emulator *emulator, Config *config, char *command);

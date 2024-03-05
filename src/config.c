@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-void (*log_func)(log_level ll, const char *format, ...) = NULL;
+void (*log_func)(LogLevel ll, const char *format, ...) = NULL;
 
 int print_config(Config *config) {
     for (int i = 0; i < INST_SET_SIZE; i++) {

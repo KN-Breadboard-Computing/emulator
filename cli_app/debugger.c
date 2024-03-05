@@ -41,6 +41,7 @@ void add_breakpoint(Debugger *debugger, uint16_t address) {
     }
     console_log(ERROR, "No more space for breakpoints");
 }
+
 void add_value_breakpoint(Debugger *debugger, uint16_t address, uint8_t value) {
     for (unsigned i = 0; i < MAX_BREAKPOINTS; i++) {
         if (debugger->breakpoints[i] == NULL)
@@ -64,7 +65,7 @@ void add_value_breakpoint(Debugger *debugger, uint16_t address, uint8_t value) {
     console_log(ERROR, "No more space for breakpoints");
 }
 
-void add_value_ch_breakpoint(Debugger *debugger,Emulator *emulator, uint16_t address) {
+void add_value_ch_breakpoint(Debugger *debugger, Emulator *emulator, uint16_t address) {
     for (unsigned i = 0; i < MAX_BREAKPOINTS; i++) {
         if (debugger->breakpoints[i] == NULL)
             continue;
@@ -86,7 +87,8 @@ void add_value_ch_breakpoint(Debugger *debugger,Emulator *emulator, uint16_t add
     }
     console_log(ERROR, "No more space for breakpoints");
 }
-void remove_breakpoint(Debugger *debugger, uint16_t address,BreakpointType type) {
+
+void remove_breakpoint(Debugger *debugger, uint16_t address, BreakpointType type) {
     for (unsigned i = 0; i < MAX_BREAKPOINTS; i++) {
         if (debugger->breakpoints[i] == NULL)
             continue;
@@ -101,6 +103,7 @@ void remove_breakpoint(Debugger *debugger, uint16_t address,BreakpointType type)
     }
     console_log(ERROR, "Breakpoint not found at 0x%04X", address);
 }
+
 void clear_breakpoints(Debugger *debugger) {
     for (unsigned i = 0; i < MAX_BREAKPOINTS; i++) {
         if (debugger->breakpoints[i] == NULL)
@@ -134,7 +137,8 @@ bool check_breakpoints(Debugger *debugger, Emulator *emulator) {
                 if (debugger->breakpoints[i]->is_hit)
                     continue;
                 is_breakpoint_hit = true;
-                console_log(INFO, "Value at 0x%04X is 0x%02X", debugger->breakpoints[i]->address, debugger->breakpoints[i]->value);
+                console_log(INFO, "Value at 0x%04X is 0x%02X", debugger->breakpoints[i]->address,
+                            debugger->breakpoints[i]->value);
                 debugger->breakpoints[i]->is_hit = true;
                 debugger->last_breakpoint = debugger->breakpoints[i];
             } else if (debugger->breakpoints[i]->is_hit) {
@@ -146,7 +150,8 @@ bool check_breakpoints(Debugger *debugger, Emulator *emulator) {
                 if (debugger->breakpoints[i]->is_hit)
                     continue;
                 is_breakpoint_hit = true;
-                console_log(INFO, "Value at 0x%04X is 0x%02X", debugger->breakpoints[i]->address, debugger->breakpoints[i]->value);
+                console_log(INFO, "Value at 0x%04X is 0x%02X", debugger->breakpoints[i]->address,
+                            debugger->breakpoints[i]->value);
                 debugger->breakpoints[i]->is_hit = true;
                 debugger->last_breakpoint = debugger->breakpoints[i];
             } else if (debugger->breakpoints[i]->is_hit) {
@@ -168,7 +173,8 @@ void print_breakpoints(Debugger *debugger, uint16_t first_address, uint16_t last
             if (debugger->breakpoints[i]->type == ADDRESS)
                 console_log(INFO, "Breakpoint found at 0x%04X", debugger->breakpoints[i]->address);
             else
-                console_log(INFO, "Value breakpoint found at 0x%04X with value 0x%02X", debugger->breakpoints[i]->address, debugger->breakpoints[i]->value);
+                console_log(INFO, "Value breakpoint found at 0x%04X with value 0x%02X",
+                            debugger->breakpoints[i]->address, debugger->breakpoints[i]->value);
         }
     }
     if (count == 0)
