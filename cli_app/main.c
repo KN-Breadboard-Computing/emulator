@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define x_frame_character '#'
 #define y_frame_character '|'
@@ -20,6 +21,12 @@ static Mode current_mode = NORMAL;
 static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
 static Memory_view_mode current_memory_view_mode[2] = {HEX, ASCII};
+static unsigned rom_size;
+//emu thread
+volatile bool stop_emu_thread = false;
+volatile int emu_thread_status=0;
+volatile unsigned wait_time = 10000000;
+volatile bool change_screen = false;
 
 void print_emulator_status(Emulator *emulator) {
     int def_x = max_x - 30, def_y = 2;
@@ -223,11 +230,14 @@ void print_screen(Emulator *emulator, Config *config) {
     print_memory(emulator);
     print_stack(emulator);
     print_console();
+    change_screen = false;
     refresh();
 }
 
 void handle_input(Debugger *debugger, Emulator *emulator, Config *config) {
     int input = getch();
+    if (input != ERR)
+        change_screen = true;
     // const char *input_str = keyname(input);
     // console_log(DEBUG, "input: %d %s", input, input_str);
     switch (current_mode) {
@@ -261,6 +271,7 @@ void handle_input(Debugger *debugger, Emulator *emulator, Config *config) {
         if (input == 10) {
             command[command_index] = '\0';
             execute_command(debugger, emulator, config, command);
+            change_screen = true;
             command_index = 0;
             current_mode = NORMAL;
             break;
@@ -277,11 +288,29 @@ void handle_input(Debugger *debugger, Emulator *emulator, Config *config) {
         current_mode = NORMAL;
     }
 }
-
+typedef struct  {
+    Emulator *emulator;
+    Config *config;
+    Debugger *debugger;
+}BundlePtr;
+void *run_emulator(void *bundle_ptr) {
+    BundlePtr *bundle = (BundlePtr *)bundle_ptr;
+    while (bundle->emulator->is_halted == 0 && bundle->emulator->program_counter < rom_size) {
+        usleep(wait_time);
+        change_screen = true;
+        if (!call_debugger(bundle->debugger, bundle->emulator))
+            continue;
+        if (run_next_emulator_instruction(bundle->emulator, bundle->config) != 0||stop_emu_thread) {
+            break;
+        }
+    }
+    emu_thread_status=1;
+    return NULL;
+}
 int main(int argc, char **argv) {
+    pthread_t emu_thread = 0;
     int cmd_opt;
     uint8_t *rom;
-    unsigned rom_size;
     char *filename = NULL;
     char *rom_filename = NULL;
     init_log_vector(&default_log_vector, 7);
@@ -336,6 +365,7 @@ int main(int argc, char **argv) {
 
     init_emulator(&emulator);
     init_debugger(&debugger);
+    BundlePtr bundle = {&emulator, &config, &debugger};
     // ncurses setup
     initscr();
     keypad(stdscr, TRUE);
@@ -347,19 +377,18 @@ int main(int argc, char **argv) {
     for (uint32_t i = 0; i < rom_size; ++i) {
         emulator.memory[i] = rom[i];
     }
-    while (emulator.is_halted == 0 && emulator.program_counter < rom_size) {
+    pthread_create(&emu_thread, NULL, run_emulator, &bundle);
+    print_screen(&emulator, &config);
+    while (emu_thread_status==0) {
         handle_input(&debugger, &emulator, &config);
+        if (change_screen)
         print_screen(&emulator, &config);
-        usleep(100000);
-        if (!call_debugger(&debugger, &emulator))
-            continue;
-        if (run_next_emulator_instruction(&emulator, &config) != 0) {
-            break;
-        }
     }
     console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
 end:
+    stop_emu_thread = true;
+    pthread_join(emu_thread, NULL);
     nodelay(stdscr, FALSE);
     cleanup_debugger(&debugger);
     cleanup_config(&config);
