@@ -1,11 +1,11 @@
 #include "cli_app_utils.h"
 #include "emulator.h"
 #include <curses.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
 
 #define x_frame_character '#'
 #define y_frame_character '|'
@@ -22,10 +22,8 @@ static int y, x, max_y, max_x;
 static uint8_t memory_tables_count = 2;
 static Memory_view_mode current_memory_view_mode[2] = {HEX, ASCII};
 static unsigned rom_size;
-//emu thread
-volatile bool stop_emu_thread = false;
-volatile int emu_thread_status=0;
-volatile unsigned wait_time = 10000000;
+// emu thread
+volatile int emu_thread_status = 0;
 volatile bool change_screen = false;
 
 void print_emulator_status(Emulator *emulator) {
@@ -288,25 +286,31 @@ void handle_input(Debugger *debugger, Emulator *emulator, Config *config) {
         current_mode = NORMAL;
     }
 }
-typedef struct  {
+
+typedef struct {
     Emulator *emulator;
     Config *config;
     Debugger *debugger;
-}BundlePtr;
+} BundlePtr;
+
 void *run_emulator(void *bundle_ptr) {
     BundlePtr *bundle = (BundlePtr *)bundle_ptr;
     while (bundle->emulator->is_halted == 0 && bundle->emulator->program_counter < rom_size) {
-        usleep(wait_time);
+        usleep(bundle->debugger->wait_time);
         change_screen = true;
+        while (bundle->debugger->on_hold) {
+            usleep(1000);
+        }
         if (!call_debugger(bundle->debugger, bundle->emulator))
             continue;
-        if (run_next_emulator_instruction(bundle->emulator, bundle->config) != 0||stop_emu_thread) {
+        if (run_next_emulator_instruction(bundle->emulator, bundle->config) != 0 || bundle->debugger->stop_emu_thread) {
             break;
         }
     }
-    emu_thread_status=1;
+    emu_thread_status = 1;
     return NULL;
 }
+
 int main(int argc, char **argv) {
     pthread_t emu_thread = 0;
     int cmd_opt;
@@ -379,15 +383,15 @@ int main(int argc, char **argv) {
     }
     pthread_create(&emu_thread, NULL, run_emulator, &bundle);
     print_screen(&emulator, &config);
-    while (emu_thread_status==0) {
+    while (emu_thread_status == 0) {
         handle_input(&debugger, &emulator, &config);
         if (change_screen)
-        print_screen(&emulator, &config);
+            print_screen(&emulator, &config);
     }
     console_log(NONE, "End of Execution (press any button to exit)");
     print_screen(&emulator, &config);
 end:
-    stop_emu_thread = true;
+    debugger.stop_emu_thread = true;
     pthread_join(emu_thread, NULL);
     nodelay(stdscr, FALSE);
     cleanup_debugger(&debugger);

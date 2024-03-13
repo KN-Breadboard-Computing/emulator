@@ -7,6 +7,11 @@ static bool has_error = false;
 
 uint16_t get_address(char *address_str) {
     uint16_t address;
+    has_error = false;
+    if (address_str[0] == '\0') {
+        has_error = true;
+        return 0;
+    }
     if (address_str[0] == '0' && address_str[1] == 'x') {
         address_str += 2;
         for (unsigned i = 0; address_str[i] != '\0'; i++) {
@@ -94,7 +99,11 @@ void handle_list(Debugger *debugger, const unsigned argc, char **argv) {
 
 void handle_run(Debugger *debugger) { debugger->emulator_running = true; }
 
-void handle_step(Emulator *emulator, Config *config) { run_next_emulator_instruction(emulator, config); }
+void handle_step(Debugger *debugger, Emulator *emulator, Config *config) {
+    debugger->on_hold = true;
+    run_next_emulator_instruction(emulator, config);
+    debugger->on_hold = false;
+}
 
 void handle_peek(Emulator *emulator, unsigned argc, char **argv) {
     if (argc < 1) {
@@ -129,4 +138,112 @@ void handle_poke(Emulator *emulator, unsigned argc, char **argv) {
     }
     emulator->memory[address] = value;
     console_log(INFO, "Changed 0x%04X to 0x%02X", address, value);
+}
+
+void handle_speed(Debugger *debugger, const unsigned argc, char **argv) {
+    if (argc < 1) {
+        console_log(ERROR, "Usage: speed <value>");
+        return;
+    }
+    for (unsigned i = 0; argv[0][i] != '\0'; i++) {
+        if (!isdigit(argv[0][i])) {
+            console_log(ERROR, "Invalid value");
+            return;
+        }
+    }
+    unsigned speed = (unsigned)strtol(argv[0], NULL, 10);
+
+    debugger->wait_time = speed;
+}
+
+void handle_quit(Debugger *debugger) {
+    debugger->stop_emu_thread = true;
+    console_log(INFO, "Stopping emulator thread...");
+}
+
+void handle_dump(Emulator *emulator, unsigned argc, char **argv) {
+    if (argc < 2) {
+        console_log(ERROR, "Usage: dump <first address (0x)HEX|DEC> <last address (0x)HEX|DEC> [format HEX|DEC|ASCII]");
+        return;
+    }
+    uint8_t format;
+    if (argc < 3) {
+        format = 0;
+    } else {
+        if (!strcmp(argv[2], "HEX") || !strcmp(argv[2], "H")) {
+            format = 0;
+        } else if (!strcmp(argv[2], "DEC") || !strcmp(argv[2], "D")) {
+            format = 1;
+        } else if (!strcmp(argv[2], "ASCII") || !strcmp(argv[2], "A")) {
+            format = 2;
+        } else {
+            console_log(ERROR, "Invalid format");
+            return;
+        }
+    }
+    uint16_t first_address, last_address;
+    first_address = get_address(argv[0]);
+    if (has_error) {
+        has_error = false;
+        return;
+    }
+    last_address = get_address(argv[1]);
+    if (has_error) {
+        has_error = false;
+        return;
+    }
+    char *output;
+    switch (format) {
+    case 0:
+        output = (char *)malloc((last_address - first_address + 1) * 3);
+        break;
+    case 1:
+        output = (char *)malloc((last_address - first_address + 1) * 4);
+        break;
+    case 2:
+        output = (char *)malloc((last_address - first_address + 1) * 2);
+        break;
+    }
+
+    for (uint16_t i = first_address; i <= last_address; i++) {
+        switch (format) {
+        case 0:
+            sprintf(output + (i - first_address) * 3, "%02X ", emulator->memory[i]);
+            break;
+        case 1:
+            sprintf(output + (i - first_address) * 4, "%03d ", emulator->memory[i]);
+            break;
+        case 2:
+            output[(i - first_address) * 2] = (char)emulator->memory[i];
+            output[(i - first_address) * 2 + 1] = ' ';
+            break;
+        }
+    }
+    console_log(INFO, output);
+    free(output);
+}
+
+void handle_load(Emulator *emulator, unsigned argc, char **argv) {
+    if (argc < 2) {
+        console_log(ERROR, "Usage: load <first address (0x)HEX|DEC> <HEX String>|(<HEX> <HEX> ...)");
+        return;
+    }
+    uint16_t address;
+    address = get_address(argv[0]);
+    if (has_error) {
+        has_error = false;
+        return;
+    }
+    for (unsigned i = 1; i < argc; ++i) {
+        unsigned long length = strlen(argv[i]);
+        for (int j = (int)length - 1; j >= 0; j -= 2) {
+            char *byte = (char *)malloc(2);
+            byte[0] = argv[i][j - 1];
+            byte[1] = argv[i][j];
+            byte[2] = '\0';
+            emulator->memory[address + j / 2] = (uint8_t)strtol(byte, NULL, 16);
+            free(byte);
+        }
+        address += length / 2;
+    }
 }

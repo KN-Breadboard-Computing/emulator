@@ -19,6 +19,9 @@ typedef struct {
     bool emulator_running;
     Breakpoint *breakpoints[MAX_BREAKPOINTS];
     Breakpoint *last_breakpoint;
+    volatile unsigned wait_time;
+    volatile bool on_hold;
+    volatile bool stop_emu_thread;
 } Debugger;
 
 void cleanup_debugger(Debugger *debugger);

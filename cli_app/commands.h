@@ -14,8 +14,16 @@ void handle_list(Debugger *debugger, unsigned argc, char **argv);
 
 void handle_run(Debugger *debugger);
 
-void handle_step(Emulator *emulator, Config *config);
+void handle_step(Debugger *debugger, Emulator *emulator, Config *config);
 
 void handle_peek(Emulator *emulator, unsigned argc, char **argv);
 
 void handle_poke(Emulator *emulator, unsigned argc, char **argv);
+
+void handle_dump(Emulator *emulator, unsigned argc, char **argv);
+
+void handle_load(Emulator *emulator, unsigned argc, char **argv);
+
+void handle_quit(Debugger *debugger);
+
+void handle_speed(Debugger *debugger, unsigned argc, char **argv);

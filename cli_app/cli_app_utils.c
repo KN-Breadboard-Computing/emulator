@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 const uint8_t SAMPLE_ROM[] = {0b00010001, // MOVAIMM 16
                               16,
                               0b11000101, // push a
@@ -193,10 +194,16 @@ void execute_command(Debugger *debugger, Emulator *emulator, Config *config, cha
         handle_peek(emulator, size, args);
     } else if (!strcmp(cmd, "poke")) {
         handle_poke(emulator, size, args);
+    } else if (!strcmp(cmd, "speed")) {
+        handle_speed(debugger, size, args);
     } else if (!strcmp(cmd, "step")) {
-        handle_step(emulator, config);
+        handle_step(debugger, emulator, config);
+    } else if (!strcmp(cmd, "dump")) {
+        handle_dump(emulator, size, args);
+    } else if (!strcmp(cmd, "load")) {
+        handle_load(emulator, size, args);
     } else if (!strcmp(cmd, "quit")) {
-        //  handle_quit(debugger);
+        handle_quit(debugger);
     } else {
         console_log(ERROR, "Unknown command: %s", cmd);
     }

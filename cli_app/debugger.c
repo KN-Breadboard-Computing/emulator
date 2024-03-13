@@ -8,6 +8,9 @@ void init_debugger(Debugger *debugger) {
     }
     debugger->emulator_running = true;
     debugger->last_breakpoint = NULL;
+    debugger->wait_time = 500000;
+    debugger->on_hold = false;
+    debugger->stop_emu_thread = false;
 }
 
 void cleanup_debugger(Debugger *debugger) {
