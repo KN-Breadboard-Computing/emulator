@@ -28,7 +28,8 @@ jobs:
       working-directory: ./build
 
     - name: Pull instructions config to ./build
-      run: curl -L https://github.com/KN-Breadboard-Computing/computer/blob/main/config/instructions.json -o ./build/instructions.json
+      run: curl -L https://raw.githubusercontent.com/KN-Breadboard-Computing/computer/main/config/instructions.json -o ./instructions.json
+      working-directory: ./build
 
     - name: Run Tests
       run: ctest
