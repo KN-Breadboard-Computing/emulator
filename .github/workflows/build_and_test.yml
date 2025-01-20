@@ -27,6 +27,9 @@ jobs:
       run: cmake --build .
       working-directory: ./build
 
+    - name: Pull instructions config to ./build
+      run: curl -L https://github.com/KN-Breadboard-Computing/computer/blob/main/config/instructions.json -o ./build/instructions.json
+
     - name: Run Tests
       run: ctest
       working-directory: ./build

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unity.h>
 
-static const char *instruction_set_path = "../computer/config/instructions.json";
+static const char *instruction_set_path = "../instructions.json";
 
 const uint8_t INIT_A_REG_VAL = 57;
 const uint8_t INIT_B_REG_VAL = (uint8_t)-37;
