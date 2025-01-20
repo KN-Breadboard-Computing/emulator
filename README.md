@@ -12,6 +12,11 @@ You can find the CliApp executable in
 ./build/cli_app/EmulatorCliApp
 ```
 
+You can test emulator running script
+```bash
+./scripts/test.sh
+```
+
 ## Contributing
 Before pushing any changes run this script
 ```bash

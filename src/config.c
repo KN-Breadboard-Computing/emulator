@@ -82,9 +82,9 @@ int load_config(Config *config, const char *const filename) {
         config->instructions[opcode]->flag_dependence = (char *)malloc(strlen(flag_dependence) + 1);
         strcpy(config->instructions[opcode]->flag_dependence, flag_dependence);
         config->instructions[opcode]->cycle_count =
-            (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "min-cycles-number"));
+            (unsigned)atoi(cJSON_GetStringValue(cJSON_GetObjectItem(inst, "min-cycles-number")));
         config->instructions[opcode]->pessimistic_cycle_count =
-            (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "max1-cycles-number"));
+            (unsigned)atoi(cJSON_GetStringValue(cJSON_GetObjectItem(inst, "max-cycles-number")));
         cJSON *operand = NULL;
         unsigned it = 0;
         cJSON_ArrayForEach(operand, operands_arr) {
