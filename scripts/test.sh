@@ -3,3 +3,6 @@ curl -L https://raw.githubusercontent.com/KN-Breadboard-Computing/computer/main/
 (cd build/tests && ./baseTest)
 (cd build/tests && ./moveTest)
 (cd build/tests && ./aluTest)
+(cd build/tests && ./jumpTest)
+(cd build/tests && ./stackTest)
+(cd build/tests && ./otherTest)

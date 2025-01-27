@@ -5,20 +5,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-const uint8_t SAMPLE_ROM[] = {0b00010101, // MOVAIMM
-                              57,
-                              0b00010110, // MOVBIMM
-                              (uint8_t)-37,
-                              // 0b10001001,     // CMPAB
-                              0b10001010, // CMPBA
-
-                              // 0b00010111,     // MOVTHIMM
-                              // 69,
-                              // 0b00011000,     // MOVTLIMM
-                              // 135,
-                              // // 0b10001011,     // CMPMTHTL
-                              // 0b10001100,     // CMPTLTH
-                              0b11101100};
+const uint8_t SAMPLE_ROM[] = {
+    0b00010101, // MOVAIMM
+    11,
+    0b00010110, // MOVBIMM
+    22,
+    0b11001110, // JMPFUN
+    12,         0,
+    0b00010101, // MOVAIMM
+    4,
+    0b00010110, // MOVBIMM
+    5,
+    0b11101100, // HALT
+    0b00010101, // MOVAIMM
+    77,
+    0b00010110, // MOVBIMM
+    88,
+    0b11001111, // JMPRET
+};
 
 void init_log_vector(LogVector *log_vector, unsigned displayable_amount) {
     log_vector->size = 0;

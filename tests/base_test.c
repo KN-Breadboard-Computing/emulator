@@ -4,8 +4,8 @@
 
 static const char *instruction_set_path = "../instructions.json";
 
-const uint8_t IMM_VAL1 = 0b10101010;
-const uint8_t IMM_VAL2 = 0b01010101;
+const uint8_t IMM_VAL1 = 0x77;
+const uint8_t IMM_VAL2 = 0x22;
 
 const uint8_t SAMPLE_PROGRAM_ROM[] = {
     0b00010101, // MOVAIMM

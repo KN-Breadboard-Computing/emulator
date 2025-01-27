@@ -14,7 +14,7 @@ const uint8_t INIT_TL_REG_VAL = 0x87;
 const uint8_t INIT_FLAG_REG_VAL = 0b00000000;
 const uint8_t INIT_INT_REG_VAL = 0b11001100;
 
-const uint8_t IMM_VAL = 0b10101010;
+const uint8_t IMM_VAL = 0x99;
 
 const uint16_t ADDR_VAL = 0x1234;
 const uint16_t ADDR_ZP_VAL = 0x0034;

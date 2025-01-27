@@ -76,6 +76,7 @@ static MemPtr process_operand(Emulator *emulator, const char *operand) {
     ret.mem16 = NULL;
     ret.mem8 = NULL;
     ret.is16 = 0;
+    ret.isTmp16 = false;
     if (!strcmp(operand, "A")) {
         ret.is16 = false;
         ret.mem8 = &emulator->a_register;
@@ -109,6 +110,7 @@ static MemPtr process_operand(Emulator *emulator, const char *operand) {
         emulator->stack_pointer++;
     } else if (!strcmp(operand, "T")) {
         ret.is16 = true;
+        ret.isTmp16 = true;
         ret.mem16 = &emulator->tmp_register_16;
     }
     return ret;
@@ -420,13 +422,22 @@ static int handle_pop(Emulator *emulator, Instruction instruction) {
     MemPtr target = process_operand(emulator, instruction.operands[0]);
     if (target.mem16 == NULL)
         return 2;
-    uint8_t *destination;
-    if (target.is16)
-        destination = &emulator->memory[*target.mem16];
-    else
-        destination = target.mem8;
-    emulator->stack_pointer--;
-    *destination = emulator->stack[emulator->stack_pointer];
+
+    if (target.isTmp16) {
+        emulator->stack_pointer--;
+        emulator->tmp_register_8[1] = emulator->stack[emulator->stack_pointer];
+        emulator->stack_pointer--;
+        emulator->tmp_register_8[0] = emulator->stack[emulator->stack_pointer];
+    } else {
+        uint8_t *destination;
+        if (target.is16)
+            destination = &emulator->memory[*target.mem16];
+        else
+            destination = target.mem8;
+        emulator->stack_pointer--;
+        *destination = emulator->stack[emulator->stack_pointer];
+    }
+
     return 0;
 }
 
@@ -436,13 +447,22 @@ static int handle_push(Emulator *emulator, Instruction instruction) {
     MemPtr target = process_operand(emulator, instruction.operands[0]);
     if (target.mem16 == NULL)
         return 2;
-    uint8_t *destination;
-    if (target.is16)
-        destination = &emulator->memory[*target.mem16];
-    else
-        destination = target.mem8;
-    emulator->stack[emulator->stack_pointer] = *destination;
-    emulator->stack_pointer++;
+
+    if (target.isTmp16) {
+        emulator->stack[emulator->stack_pointer] = emulator->tmp_register_8[0];
+        emulator->stack_pointer++;
+        emulator->stack[emulator->stack_pointer] = emulator->tmp_register_8[1];
+        emulator->stack_pointer++;
+    } else {
+        uint8_t *destination;
+        if (target.is16)
+            destination = &emulator->memory[*target.mem16];
+        else
+            destination = target.mem8;
+        emulator->stack[emulator->stack_pointer] = *destination;
+        emulator->stack_pointer++;
+    }
+
     return 0;
 }
 
@@ -463,12 +483,59 @@ static int handle_jmprel(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
     MemPtr target = process_operand(emulator, instruction.operands[0]);
-    if (!target.is16)
+    if (target.is16)
         return 2;
     if (check_flags(emulator, instruction.flag_dependence)) {
-        emulator->program_counter += *target.mem8;
+        if (!strcmp(instruction.operands[0], "TL")) {
+            uint8_t tl_value = emulator->tmp_register_8[0];
+            emulator->tmp_register_16 = emulator->program_counter + 1;
+            emulator->tmp_register_8[0] += tl_value;
+            emulator->program_counter = emulator->tmp_register_16;
+        } else {
+            emulator->tmp_register_16 = emulator->program_counter;
+            emulator->tmp_register_8[0] += *target.mem8;
+            emulator->program_counter = emulator->tmp_register_16;
+        }
+
         emulator->clock_cycles_counter += instruction.pessimistic_cycle_count - instruction.cycle_count;
     }
+    return 0;
+}
+
+static int handle_jmp_fun(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 1)
+        return 1;
+    MemPtr target = process_operand(emulator, instruction.operands[0]);
+    if (!target.is16)
+        return 2;
+
+    uint8_t pc_low = emulator->program_counter & 0xFF;
+    uint8_t pc_high = emulator->program_counter >> 8;
+
+    emulator->stack[emulator->stack_pointer] = pc_low;
+    emulator->stack_pointer++;
+
+    emulator->stack[emulator->stack_pointer] = pc_high;
+    emulator->stack_pointer++;
+
+    emulator->program_counter = *target.mem16;
+
+    return 0;
+}
+
+static int handle_jmp_ret(Emulator *emulator, Instruction /*instruction*/) {
+    emulator->stack_pointer--;
+    uint8_t pc_high = emulator->stack[emulator->stack_pointer];
+    emulator->stack_pointer--;
+    uint8_t pc_low = emulator->stack[emulator->stack_pointer];
+
+    emulator->program_counter = (int16_t)((pc_high << 8) | pc_low);
+
+    return 0;
+}
+
+static int handle_skip(Emulator *emulator, uint8_t steps) {
+    emulator->program_counter += steps;
     return 0;
 }
 
@@ -527,6 +594,12 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
         ret = handle_jmpimm(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "JMPREL")) {
         ret = handle_jmprel(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "JMPFUN")) {
+        ret = handle_jmp_fun(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "JMPRET")) {
+        ret = handle_jmp_ret(emulator, instruction);
+    } else if (!strcmp(instruction.mnemonic, "CLR")) {
+        ret = handle_clr(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "CLR")) {
         ret = handle_clr(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "PUSH")) {
@@ -534,9 +607,25 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
     } else if (!strcmp(instruction.mnemonic, "POP")) {
         ret = handle_pop(emulator, instruction);
     } else if (!strcmp(instruction.mnemonic, "SKIP")) {
+        ret = handle_skip(emulator, 0);
         if (log_func != NULL) {
-            log_func(INFO, "(skip) A: (s %d u: %u), B: (s %d u: %u)", emulator->signed_a_register, emulator->a_register,
-                     emulator->signed_b_register, emulator->b_register);
+            log_func(INFO, "(skip) A: (s %d u: %u), B: (s %d u: %u), PC: %u", emulator->signed_a_register,
+                     emulator->a_register, emulator->signed_b_register, emulator->b_register,
+                     emulator->program_counter);
+        }
+    } else if (!strcmp(instruction.mnemonic, "SKIP1")) {
+        ret = handle_skip(emulator, 1);
+        if (log_func != NULL) {
+            log_func(INFO, "(skip1) A: (s %d u: %u), B: (s %d u: %u), PC: %u", emulator->signed_a_register,
+                     emulator->a_register, emulator->signed_b_register, emulator->b_register,
+                     emulator->program_counter);
+        }
+    } else if (!strcmp(instruction.mnemonic, "SKIP2")) {
+        ret = handle_skip(emulator, 2);
+        if (log_func != NULL) {
+            log_func(INFO, "(skip2) A: (s %d u: %u), B: (s %d u: %u), PC: %u", emulator->signed_a_register,
+                     emulator->a_register, emulator->signed_b_register, emulator->b_register,
+                     emulator->program_counter);
         }
     } else {
         if (log_func != NULL)

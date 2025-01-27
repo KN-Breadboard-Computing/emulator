@@ -23,7 +23,19 @@ typedef struct {
         uint8_t tmp_register_8[2];
     };
 
-    uint8_t flag_register;
+    union {
+        uint8_t flag_register;
+
+        struct {
+            uint8_t : 3;
+            uint8_t flag_overflow : 1;
+            uint8_t flag_carry : 1;
+            uint8_t flag_zero : 1;
+            uint8_t flag_parity : 1;
+            uint8_t flag_sign : 1;
+        };
+    };
+
     uint16_t stack_pointer;
     uint16_t program_counter;
     bool is_halted;
@@ -38,6 +50,7 @@ typedef struct {
 
 typedef struct {
     bool is16;
+    bool isTmp16;
 
     union {
         uint8_t *mem8;
