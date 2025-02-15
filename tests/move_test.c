@@ -6,13 +6,13 @@ static const char *instruction_set_path = "../instructions.json";
 
 const uint8_t INIT_A_REG_VAL = 57;
 const uint8_t INIT_B_REG_VAL = (uint8_t)-37;
+const uint8_t INIT_INT_DATA_VAL = 0x99;
 
 const uint16_t INIT_TMP_REG_VAL = 0x4587;
 const uint8_t INIT_TH_REG_VAL = 0x45;
 const uint8_t INIT_TL_REG_VAL = 0x87;
 
-const uint8_t INIT_FLAG_REG_VAL = 0b00000000;
-const uint8_t INIT_INT_REG_VAL = 0b11001100;
+const uint8_t INIT_FLAG_REG_VAL = 0b10101010;
 
 const uint8_t IMM_VAL = 0x99;
 
@@ -526,24 +526,23 @@ void test_move_af(void) {
 }
 
 void test_move_aint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVE_AINT_ROM, sizeof(MOVE_AINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_AINT_ROM, sizeof(MOVE_AINT_ROM));
 
-    // bundle.emulator->a_register = INIT_A_REG_VAL;
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->a_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVE_AINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVE_AINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_move_ba(void) {
@@ -633,24 +632,23 @@ void test_move_bf(void) {
 }
 
 void test_move_bint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVE_BINT_ROM, sizeof(MOVE_BINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_BINT_ROM, sizeof(MOVE_BINT_ROM));
 
-    // bundle.emulator->b_register = INIT_B_REG_VAL;
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->b_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVE_BINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVE_BINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_move_tha(void) {
@@ -747,28 +745,27 @@ void test_move_thf(void) {
 }
 
 void test_move_thint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVE_THINT_ROM, sizeof(MOVE_THINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_THINT_ROM, sizeof(MOVE_THINT_ROM));
 
-    // bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // u16_u8u8 tmp;
-    // tmp.u16 = INIT_TMP_REG_VAL;
-    // tmp.high = INIT_INT_REG_VAL;
+    u16_u8u8 tmp;
+    tmp.u16 = INIT_TMP_REG_VAL;
+    tmp.high = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(tmp.u16, bundle.emulator->tmp_register_16);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(tmp.u16, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVE_THINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVE_THINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_move_tla(void) {
@@ -865,28 +862,27 @@ void test_move_tlf(void) {
 }
 
 void test_move_tlint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVE_TLINT_ROM, sizeof(MOVE_TLINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_TLINT_ROM, sizeof(MOVE_TLINT_ROM));
 
-    // bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // u16_u8u8 tmp;
-    // tmp.u16 = INIT_TMP_REG_VAL;
-    // tmp.low = INIT_INT_REG_VAL;
+    u16_u8u8 tmp;
+    tmp.u16 = INIT_TMP_REG_VAL;
+    tmp.low = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(tmp.u16, bundle.emulator->tmp_register_16);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(tmp.u16, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVE_TLINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVE_TLINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_move_aimm(void) {
@@ -1122,43 +1118,41 @@ void test_moveat_absbzp(void) {
 }
 
 void test_moveat_absint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVEAT_ABSINT_ROM, sizeof(MOVEAT_ABSINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVEAT_ABSINT_ROM, sizeof(MOVEAT_ABSINT_ROM));
 
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
-    // TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_VAL]);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_VAL]);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->memory[ADDR_VAL]);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->memory[ADDR_VAL]);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVEAT_ABSINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVEAT_ABSINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_moveat_absintzp(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVEAT_ABSINTZP_ROM, sizeof(MOVEAT_ABSINTZP_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVEAT_ABSINTZP_ROM, sizeof(MOVEAT_ABSINTZP_ROM));
 
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
-    // TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_ZP_VAL]);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_ZP_VAL]);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->memory[ADDR_ZP_VAL]);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->memory[ADDR_ZP_VAL]);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVEAT_ABSINTZP_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVEAT_ABSINTZP_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_moveat_absimm(void) {
@@ -1234,25 +1228,24 @@ void test_moveat_tb(void) {
 }
 
 void test_moveat_tint(void) {
-    TEST_IGNORE();
-    // BundlePtr bundle;
-    // initialize_bundle(&bundle, MOVEAT_TINT_ROM, sizeof(MOVEAT_TINT_ROM));
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVEAT_TINT_ROM, sizeof(MOVEAT_TINT_ROM));
 
-    // bundle.emulator->tmp_register_16 = ADDR_VAL;
-    // bundle.emulator->int_register = INIT_INT_REG_VAL;
+    bundle.emulator->tmp_register_16 = ADDR_VAL;
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
 
-    // TEST_ASSERT_EQUAL(ADDR_VAL, bundle.emulator->tmp_register_16);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
-    // TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_VAL]);
+    TEST_ASSERT_EQUAL(ADDR_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(0, bundle.emulator->memory[ADDR_VAL]);
 
-    // run_emulator(&bundle);
+    run_emulator(&bundle);
 
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->memory[ADDR_VAL]);
-    // TEST_ASSERT_EQUAL(INIT_INT_REG_VAL, bundle.emulator->int_register);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->memory[ADDR_VAL]);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
 
-    // TEST_ASSERT_EQUAL(sizeof(MOVEAT_TINT_ROM), bundle.emulator->program_counter);
+    TEST_ASSERT_EQUAL(sizeof(MOVEAT_TINT_ROM), bundle.emulator->program_counter);
 
-    // clear_emulator(&bundle);
+    clear_emulator(&bundle);
 }
 
 void test_moveat_ab(void) {

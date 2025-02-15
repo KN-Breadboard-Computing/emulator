@@ -43,13 +43,21 @@ void print_emulator_status(Emulator *emulator) {
         mvprintw(y, x += 2, "%d ", ((a << i) & 0x80) != 0);
     }
     x = def_x;
+    y++;
+    mvprintw(y++, x, "int data: %d", emulator->interrupt_data);
+    mvprintw(y++, x, "int signals: 4 3 2 1 0 - - -");
+    x += 11;
+    for (int i = 0; i < 8; i++) {
+        mvprintw(y, x += 2, "%d ", ((emulator->interrupt_signals << i) & 0x80) != 0);
+    }
+    x = def_x;
     y += 2;
     mvprintw(y++, x, "Emulator Stats:");
     mvprintw(y++, x, "is_halted: %u", emulator->is_halted);
     mvprintw(y++, x, "clock_cycles_counter: %u", emulator->clock_cycles_counter);
     mvprintw(y++, x, "instruction_counter: %u", emulator->instruction_counter);
     x = def_x - 2;
-    for (y = 1; y < 16; ++y) {
+    for (y = 1; y < 19; ++y) {
         mvaddch(y, x, y_frame_character);
     }
     for (; x < max_x - 1; x++) {

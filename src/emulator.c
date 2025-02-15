@@ -8,6 +8,8 @@ void init_emulator(Emulator *emulator) {
     emulator->stack_pointer = 0;
     emulator->program_counter = 0;
     emulator->flag_register = 0;
+    emulator->interrupt_data = 0;
+    emulator->interrupt_signals = 0;
     emulator->is_halted = 0;
     emulator->clock_cycles_counter = 0;
     emulator->instruction_counter = 0;
@@ -83,6 +85,9 @@ static MemPtr process_operand(Emulator *emulator, const char *operand) {
     } else if (!strcmp(operand, "B")) {
         ret.is16 = false;
         ret.mem8 = &emulator->b_register;
+    } else if (!strcmp(operand, "INT")) {
+        ret.is16 = false;
+        ret.mem8 = &emulator->interrupt_data;
     } else if (!strcmp(operand, "CONST")) {
         ret.is16 = false;
         ret.mem8 = fetch_next_byte(emulator);
@@ -539,6 +544,11 @@ static int handle_skip(Emulator *emulator, uint8_t steps) {
     return 0;
 }
 
+static int handle_int(Emulator *emulator, uint8_t signal_number) {
+    emulator->interrupt_signals |= (1 << signal_number);
+    return 0;
+}
+
 // 0 - OK
 // 1 - WRONG NUMBER OF OPERANDS
 // 2 - INVALID OPERANDS
@@ -627,6 +637,16 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
                      emulator->a_register, emulator->signed_b_register, emulator->b_register,
                      emulator->program_counter);
         }
+    } else if (!strcmp(instruction.mnemonic, "INT0")) {
+        ret = handle_int(emulator, 0);
+    } else if (!strcmp(instruction.mnemonic, "INT1")) {
+        ret = handle_int(emulator, 1);
+    } else if (!strcmp(instruction.mnemonic, "INT2")) {
+        ret = handle_int(emulator, 2);
+    } else if (!strcmp(instruction.mnemonic, "INT3")) {
+        ret = handle_int(emulator, 3);
+    } else if (!strcmp(instruction.mnemonic, "INT4")) {
+        ret = handle_int(emulator, 4);
     } else {
         if (log_func != NULL)
             log_func(INFO, "%s is not implemented yet :<<\n", instruction.mnemonic);

@@ -36,6 +36,24 @@ typedef struct {
         };
     };
 
+    union {
+        uint8_t interrupt_data;
+        int8_t signed_interrupt_data;
+    };
+
+    union {
+        uint8_t interrupt_signals;
+
+        struct {
+            uint8_t : 3;
+            uint8_t interrupt_signal_4 : 1;
+            uint8_t interrupt_signal_3 : 1;
+            uint8_t interrupt_signal_2 : 1;
+            uint8_t interrupt_signal_1 : 1;
+            uint8_t interrupt_signal_0 : 1;
+        };
+    };
+
     uint16_t stack_pointer;
     uint16_t program_counter;
     bool is_halted;

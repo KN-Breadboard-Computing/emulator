@@ -6,10 +6,13 @@ static const char *instruction_set_path = "../instructions.json";
 
 const uint8_t INIT_A_REG_VAL = 57;
 const uint8_t INIT_B_REG_VAL = (uint8_t)-37;
+const uint8_t INIT_INT_DATA_VAL = 0x99;
 
 const uint16_t INIT_TMP_REG_VAL = 0x4587;
 const uint8_t INIT_TH_REG_VAL = 0x45;
 const uint8_t INIT_TL_REG_VAL = 0x87;
+
+const uint8_t INIT_FLAG_REG_VAL = 0b10101010;
 
 const uint8_t IMM_VAL = 0x99;
 
@@ -285,10 +288,19 @@ void test_pushf(void) {
 }
 
 void test_pushint(void) {
-    TEST_IGNORE();
-
     BundlePtr bundle;
     initialize_bundle(&bundle, PUSHINT_ROM, sizeof(PUSHINT_ROM));
+
+    bundle.emulator->interrupt_data = INIT_INT_DATA_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->interrupt_data);
+    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(INIT_INT_DATA_VAL, bundle.emulator->stack[0]);
 
     clear_emulator(&bundle);
 }

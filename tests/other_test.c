@@ -7,6 +7,8 @@ static const char *instruction_set_path = "../instructions.json";
 const uint8_t INIT_A_REG_VAL = 57;
 const uint8_t INIT_B_REG_VAL = (uint8_t)-37;
 
+const uint8_t INIT_INT_SIGNALS = 0b00000000;
+
 const uint8_t NOP_ROM[] = {
     0b11100001, // NOP
     0b11101100  // HALT
@@ -233,9 +235,12 @@ void test_int0(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, INT0_ROM, sizeof(INT0_ROM));
 
-    TEST_IGNORE();
+    bundle.emulator->interrupt_signals = INIT_INT_SIGNALS;
 
+    TEST_ASSERT_EQUAL(0, bundle.emulator->interrupt_signals);
     run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL((1 << 0), bundle.emulator->interrupt_signals);
 
     TEST_ASSERT_EQUAL(sizeof(INT0_ROM), bundle.emulator->program_counter);
 
@@ -246,9 +251,12 @@ void test_int1(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, INT1_ROM, sizeof(INT1_ROM));
 
-    TEST_IGNORE();
+    bundle.emulator->interrupt_signals = INIT_INT_SIGNALS;
+    TEST_ASSERT_EQUAL(0, bundle.emulator->interrupt_signals);
 
     run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL((1 << 1), bundle.emulator->interrupt_signals);
 
     TEST_ASSERT_EQUAL(sizeof(INT1_ROM), bundle.emulator->program_counter);
 
@@ -259,9 +267,12 @@ void test_int2(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, INT2_ROM, sizeof(INT2_ROM));
 
-    TEST_IGNORE();
+    bundle.emulator->interrupt_signals = INIT_INT_SIGNALS;
+    TEST_ASSERT_EQUAL(0, bundle.emulator->interrupt_signals);
 
     run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL((1 << 2), bundle.emulator->interrupt_signals);
 
     TEST_ASSERT_EQUAL(sizeof(INT2_ROM), bundle.emulator->program_counter);
 
@@ -272,9 +283,12 @@ void test_int3(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, INT3_ROM, sizeof(INT3_ROM));
 
-    TEST_IGNORE();
+    bundle.emulator->interrupt_signals = INIT_INT_SIGNALS;
+    TEST_ASSERT_EQUAL(0, bundle.emulator->interrupt_signals);
 
     run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL((1 << 3), bundle.emulator->interrupt_signals);
 
     TEST_ASSERT_EQUAL(sizeof(INT3_ROM), bundle.emulator->program_counter);
 
@@ -285,9 +299,12 @@ void test_int4(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, INT4_ROM, sizeof(INT4_ROM));
 
-    TEST_IGNORE();
+    bundle.emulator->interrupt_signals = INIT_INT_SIGNALS;
+    TEST_ASSERT_EQUAL(0, bundle.emulator->interrupt_signals);
 
     run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL((1 << 4), bundle.emulator->interrupt_signals);
 
     TEST_ASSERT_EQUAL(sizeof(INT4_ROM), bundle.emulator->program_counter);
 
