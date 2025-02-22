@@ -22,93 +22,93 @@ const uint8_t ADDR_HIGH_VAL = 0x12;
 const uint8_t ADDR_LOW_VAL = 0x34;
 
 const uint8_t PUSHA_ROM[] = {
-    0b11010000, // PUSHA
-    0b11101100  // HALT
+    0b11011110, // PUSHA
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHB_ROM[] = {
-    0b11010001, // PUSHB
-    0b11101100  // HALT
+    0b11011111, // PUSHB
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHTH_ROM[] = {
-    0b11010010, // PUSHTH
-    0b11101100  // HALT
+    0b11100000, // PUSHTH
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHTL_ROM[] = {
-    0b11010011, // PUSHTL
-    0b11101100  // HALT
+    0b11100001, // PUSHTL
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHF_ROM[] = {
-    0b11010100, // PUSHF
-    0b11101100  // HALT
+    0b11100010, // PUSHF
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHINT_ROM[] = {
-    0b11010101, // PUSHINT
-    0b11101100  // HALT
+    0b11100011, // PUSHINT
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHT_ROM[] = {
-    0b11010110, // PUSHT
-    0b11101100  // HALT
+    0b11100100, // PUSHT
+    0b11111010  // HALT
 };
 
 const uint8_t PUSHIMM_ROM[] = {
-    0b11010111, // PUSHIMM
+    0b11100101, // PUSHIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t PUSHABS_ROM[] = {
-    0b11011000, // PUSHABS
+    0b11100110, // PUSHABS
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t PUSHABSZP_ROM[] = {
-    0b11011001, // PUSHABSZP
+    0b11100111, // PUSHABSZP
     ADDR_ZP_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t POPA_ROM[] = {
-    0b11011010, // POPA
-    0b11101100  // HALT
+    0b11101000, // POPA
+    0b11111010  // HALT
 };
 
 const uint8_t POPB_ROM[] = {
-    0b11011011, // POPB
-    0b11101100  // HALT
+    0b11101001, // POPB
+    0b11111010  // HALT
 };
 
 const uint8_t POPTH_ROM[] = {
-    0b11011100, // POPTH
-    0b11101100  // HALT
+    0b11101010, // POPTH
+    0b11111010  // HALT
 };
 
 const uint8_t POPTL_ROM[] = {
-    0b11011101, // POPTL
-    0b11101100  // HALT
+    0b11101011, // POPTL
+    0b11111010  // HALT
 };
 
 const uint8_t POPT_ROM[] = {
-    0b11011110, // POPT
-    0b11101100  // HALT
+    0b11101100, // POPT
+    0b11111010  // HALT
 };
 
 const uint8_t POPMEM_ROM[] = {
-    0b11011111, // POPMEM
+    0b11101101, // POPMEM
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t POPMEMZP_ROM[] = {
-    0b11100000, // POPMEMZP
+    0b11101110, // POPMEMZP
     ADDR_ZP_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 typedef struct {

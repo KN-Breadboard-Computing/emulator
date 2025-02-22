@@ -10,13 +10,13 @@ const uint8_t INIT_B_REG_VAL = (uint8_t)-37;
 const uint8_t INIT_INT_SIGNALS = 0b00000000;
 
 const uint8_t NOP_ROM[] = {
-    0b11100001, // NOP
-    0b11101100  // HALT
+    0b11101111, // NOP
+    0b11111010  // HALT
 };
 
 const uint8_t SKIP_ROM[] = {
-    0b11100010, // SKIP
-    0b11101100  // HALT
+    0b11110000, // SKIP
+    0b11111010  // HALT
 };
 
 const uint8_t SKIP1_ROM[] = {
@@ -24,10 +24,10 @@ const uint8_t SKIP1_ROM[] = {
     INIT_A_REG_VAL,
     0b00010110, // MOVBIMM
     INIT_B_REG_VAL,
-    0b11100011, // SKIP1
-    0b10011001, // CLRA
-    0b10011010, // CLRB
-    0b11101100  // HALT
+    0b11110001, // SKIP1
+    0b10100111, // CLRA
+    0b10101000, // CLRB
+    0b11111010  // HALT
 };
 
 const uint8_t SKIP2_ROM[] = {
@@ -35,49 +35,49 @@ const uint8_t SKIP2_ROM[] = {
     INIT_A_REG_VAL,
     0b00010110, // MOVBIMM
     INIT_B_REG_VAL,
-    0b11100100, // SKIP2
-    0b10011001, // CLRA
-    0b10011010, // CLRB
-    0b11101100  // HALT
+    0b11110010, // SKIP2
+    0b10100111, // CLRA
+    0b10101000, // CLRB
+    0b11111010  // HALT
 };
 
 const uint8_t ISR_ROM[] = {
-    0b11100101, // ISR
-    0b11101100  // HALT
+    0b11110011, // ISR
+    0b11111010  // HALT
 };
 
 const uint8_t IRET_ROM[] = {
-    0b11100110, // IRET
-    0b11101100  // HALT
+    0b11110100, // IRET
+    0b11111010  // HALT
 };
 
 const uint8_t INT0_ROM[] = {
-    0b11100111, // INT0
-    0b11101100  // HALT
+    0b11110101, // INT0
+    0b11111010  // HALT
 };
 
 const uint8_t INT1_ROM[] = {
-    0b11101000, // INT1
-    0b11101100  // HALT
+    0b11110110, // INT1
+    0b11111010  // HALT
 };
 
 const uint8_t INT2_ROM[] = {
-    0b11101001, // INT2
-    0b11101100  // HALT
+    0b11110111, // INT2
+    0b11111010  // HALT
 };
 
 const uint8_t INT3_ROM[] = {
-    0b11101010, // INT3
-    0b11101100  // HALT
+    0b11111000, // INT3
+    0b11111010  // HALT
 };
 
 const uint8_t INT4_ROM[] = {
-    0b11101011, // INT4
-    0b11101100  // HALT
+    0b11111001, // INT4
+    0b11111010  // HALT
 };
 
 const uint8_t HALT_ROM[] = {
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 typedef struct {

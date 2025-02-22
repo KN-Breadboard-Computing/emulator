@@ -19,570 +19,570 @@ const uint8_t ADDR_HIGH_VAL = 0x12;
 const uint8_t ADDR_LOW_VAL = 0x34;
 
 const uint8_t NEGAA_ROM[] = {
-    0b00111001, // NEGAA
-    0b11101100  // HALT
+    0b01000111, // NEGAA
+    0b11111010  // HALT
 };
 
 const uint8_t NEGAB_ROM[] = {
-    0b00111010, // NEGAB
-    0b11101100  // HALT
+    0b01001000, // NEGAB
+    0b11111010  // HALT
 };
 
 const uint8_t NEGBA_ROM[] = {
-    0b00111011, // NEGBA
-    0b11101100  // HALT
+    0b01001001, // NEGBA
+    0b11111010  // HALT
 };
 
 const uint8_t NEGBB_ROM[] = {
-    0b00111100, // NEGBB
-    0b11101100  // HALT
+    0b01001010, // NEGBB
+    0b11111010  // HALT
 };
 
 const uint8_t NEGMEMA_ROM[] = {
-    0b00111101, // NEGMEMA
+    0b01001011, // NEGMEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t NEGMEMB_ROM[] = {
-    0b00111110, // NEGMEMB
+    0b01001100, // NEGMEMB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t NEGMEZPA_ROM[] = {
-    0b00111111, // NEGMEZPA
+    0b01001101, // NEGMEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t NEGMEZPB_ROM[] = {
-    0b01000000, // NEGMEZPB
+    0b01001110, // NEGMEZPB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t NEGSTCA_ROM[] = {
-    0b01000001, // NEGSTCA
-    0b11101100  // HALT
+    0b01001111, // NEGSTCA
+    0b11111010  // HALT
 };
 
 const uint8_t NEGSTCB_ROM[] = {
-    0b01000010, // NEGSTCB
-    0b11101100  // HALT
+    0b01010000, // NEGSTCB
+    0b11111010  // HALT
 };
 
 const uint8_t ADDA_ROM[] = {
-    0b01000011, // ADDA
-    0b11101100  // HALT
+    0b01010001, // ADDA
+    0b11111010  // HALT
 };
 
 const uint8_t ADDB_ROM[] = {
-    0b01000100, // ADDB
-    0b11101100  // HALT
+    0b01010010, // ADDB
+    0b11111010  // HALT
 };
 
 const uint8_t ADDMEM_ROM[] = {
-    0b01000101, // ADDMEMA
+    0b01010011, // ADDMEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ADDMEZP_ROM[] = {
-    0b01000110, // ADDMEZPA
+    0b01010100, // ADDMEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ADDSTC_ROM[] = {
-    0b01000111, // ADDSTCA
-    0b11101100  // HALT
+    0b01010101, // ADDSTCA
+    0b11111010  // HALT
 };
 
 const uint8_t SUBAAB_ROM[] = {
-    0b01001000, // SUBAAB
-    0b11101100  // HALT
+    0b01010110, // SUBAAB
+    0b11111010  // HALT
 };
 
 const uint8_t SUBABA_ROM[] = {
-    0b01001001, // SUBABA
-    0b11101100  // HALT
+    0b01010111, // SUBABA
+    0b11111010  // HALT
 };
 
 const uint8_t SUBBAB_ROM[] = {
-    0b01001010, // SUBBAB
-    0b11101100  // HALT
+    0b01011000, // SUBBAB
+    0b11111010  // HALT
 };
 
 const uint8_t SUBBBA_ROM[] = {
-    0b01001011, // SUBBBA
-    0b11101100  // HALT
+    0b01011001, // SUBBBA
+    0b11111010  // HALT
 };
 
 const uint8_t SUBMEMAB_ROM[] = {
-    0b01001100, // SUBMEMAB
+    0b01011010, // SUBMEMAB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SUBMEMBA_ROM[] = {
-    0b01001101, // SUBMEMBA
+    0b01011011, // SUBMEMBA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SUBMEZPAB_ROM[] = {
-    0b01001110, // SUBMEZPAB
+    0b01011100, // SUBMEZPAB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SUBMEZPBA_ROM[] = {
-    0b01001111, // SUBMEZPBA
+    0b01011101, // SUBMEZPBA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SUBSTCAB_ROM[] = {
-    0b01010000, // SUBSTCAB
-    0b11101100  // HALT
+    0b01011110, // SUBSTCAB
+    0b11111010  // HALT
 };
 
 const uint8_t SUBSTCBA_ROM[] = {
-    0b01010001, // SUBSTCBA
-    0b11101100  // HALT
+    0b01011111, // SUBSTCBA
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2AA_ROM[] = {
-    0b01010010, // DIV2AA
-    0b11101100  // HALT
+    0b01100000, // DIV2AA
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2AB_ROM[] = {
-    0b01010011, // DIV2AB
-    0b11101100  // HALT
+    0b01100001, // DIV2AB
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2BA_ROM[] = {
-    0b01010100, // DIV2BA
-    0b11101100  // HALT
+    0b01100010, // DIV2BA
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2BB_ROM[] = {
-    0b01010101, // DIV2BB
-    0b11101100  // HALT
+    0b01100011, // DIV2BB
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2MEMA_ROM[] = {
-    0b01010110, // DIV2MEMA
+    0b01100100, // DIV2MEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t DIV2MEMB_ROM[] = {
-    0b01010111, // DIV2MEMB
+    0b01100101, // DIV2MEMB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t DIV2MEZPA_ROM[] = {
-    0b01011000, // DIV2MEZPA
+    0b01100110, // DIV2MEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t DIV2MEZPB_ROM[] = {
-    0b01011001, // DIV2MEZPB
+    0b01100111, // DIV2MEZPB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t DIV2STCA_ROM[] = {
-    0b01011010, // DIV2STCA
-    0b11101100  // HALT
+    0b01101000, // DIV2STCA
+    0b11111010  // HALT
 };
 
 const uint8_t DIV2STCB_ROM[] = {
-    0b01011011, // DIV2STCB
-    0b11101100  // HALT
+    0b01101001, // DIV2STCB
+    0b11111010  // HALT
 };
 
 const uint8_t INVAA_ROM[] = {
-    0b01011100, // INVAA
-    0b11101100  // HALT
+    0b01101010, // INVAA
+    0b11111010  // HALT
 };
 
 const uint8_t INVAB_ROM[] = {
-    0b01011101, // INVAB
-    0b11101100  // HALT
+    0b01101011, // INVAB
+    0b11111010  // HALT
 };
 
 const uint8_t INVBA_ROM[] = {
-    0b01011110, // INVBA
-    0b11101100  // HALT
+    0b01101100, // INVBA
+    0b11111010  // HALT
 };
 
 const uint8_t INVBB_ROM[] = {
-    0b01011111, // INVBB
-    0b11101100  // HALT
+    0b01101101, // INVBB
+    0b11111010  // HALT
 };
 
 const uint8_t INVMEMA_ROM[] = {
-    0b01100000, // INVMEMA
+    0b01101110, // INVMEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t INVMEMB_ROM[] = {
-    0b01100001, // INVMEMB
+    0b01101111, // INVMEMB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t INVMEZPA_ROM[] = {
-    0b01100010, // INVMEZPA
+    0b01110000, // INVMEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t INVMEZPB_ROM[] = {
-    0b01100011, // INVMEZPB
+    0b01110001, // INVMEZPB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t INVSTCA_ROM[] = {
-    0b01100100, // INVSTCA
-    0b11101100  // HALT
+    0b01110010, // INVSTCA
+    0b11111010  // HALT
 };
 
 const uint8_t INVSTCB_ROM[] = {
-    0b01100101, // INVSTCB
-    0b11101100  // HALT
+    0b01110011, // INVSTCB
+    0b11111010  // HALT
 };
 
 const uint8_t ORAA_ROM[] = {
-    0b01100110, // ORAA
-    0b11101100  // HALT
+    0b01110100, // ORAA
+    0b11111010  // HALT
 };
 
 const uint8_t ORAB_ROM[] = {
-    0b01100111, // ORAB
-    0b11101100  // HALT
+    0b01110101, // ORAB
+    0b11111010  // HALT
 };
 
 const uint8_t ORMEM_ROM[] = {
-    0b01101000, // ORMEM
+    0b01110110, // ORMEM
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ORMEZP_ROM[] = {
-    0b01101001, // ORMEZP
+    0b01110111, // ORMEZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ORSTC_ROM[] = {
-    0b01101010, // ORSTC
-    0b11101100  // HALT
+    0b01111000, // ORSTC
+    0b11111010  // HALT
 };
 
 const uint8_t ANDA_ROM[] = {
-    0b01101011, // ANDA
-    0b11101100  // HALT
+    0b01111001, // ANDA
+    0b11111010  // HALT
 };
 
 const uint8_t ANDB_ROM[] = {
-    0b01101100, // ANDB
-    0b11101100  // HALT
+    0b01111010, // ANDB
+    0b11111010  // HALT
 };
 
 const uint8_t ANDMEM_ROM[] = {
-    0b01101101, // ANDMEM
+    0b01111011, // ANDMEM
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ANDMEZP_ROM[] = {
-    0b01101110, // ANDMEZP
+    0b01111100, // ANDMEZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t ANDSTC_ROM[] = {
-    0b01101111, // ANDSTC
-    0b11101100  // HALT
+    0b01111101, // ANDSTC
+    0b11111010  // HALT
 };
 
 const uint8_t XORA_ROM[] = {
-    0b01110000, // XORA
-    0b11101100  // HALT
+    0b01111110, // XORA
+    0b11111010  // HALT
 };
 
 const uint8_t XORB_ROM[] = {
-    0b01110001, // XORB
-    0b11101100  // HALT
+    0b01111111, // XORB
+    0b11111010  // HALT
 };
 
 const uint8_t XORMEM_ROM[] = {
-    0b01110010, // XORMEM
+    0b10000000, // XORMEM
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t XORMEZP_ROM[] = {
-    0b01110011, // XORMEZP
+    0b10000001, // XORMEZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t XORSTC_ROM[] = {
-    0b01110100, // XORSTC
-    0b11101100  // HALT
+    0b10000010, // XORSTC
+    0b11111010  // HALT
 };
 
 const uint8_t SHRAA_ROM[] = {
-    0b01110101, // SHRAA
-    0b11101100  // HALT
+    0b10000011, // SHRAA
+    0b11111010  // HALT
 };
 
 const uint8_t SHRAB_ROM[] = {
-    0b01110110, // SHRAB
-    0b11101100  // HALT
+    0b10000100, // SHRAB
+    0b11111010  // HALT
 };
 
 const uint8_t SHRBA_ROM[] = {
-    0b01110111, // SHRBA
-    0b11101100  // HALT
+    0b10000101, // SHRBA
+    0b11111010  // HALT
 };
 
 const uint8_t SHRBB_ROM[] = {
-    0b01111000, // SHRBB
-    0b11101100  // HALT
+    0b10000110, // SHRBB
+    0b11111010  // HALT
 };
 
 const uint8_t SHRMEMA_ROM[] = {
-    0b01111001, // SHRMEMA
+    0b10000111, // SHRMEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHRMEMB_ROM[] = {
-    0b01111010, // SHRMEMB
+    0b10001000, // SHRMEMB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHRMEZPA_ROM[] = {
-    0b01111011, // SHRMEZPA
+    0b10001001, // SHRMEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHRMEZPB_ROM[] = {
-    0b01111100, // SHRMEZPB
+    0b10001010, // SHRMEZPB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHRSTCA_ROM[] = {
-    0b01111101, // SHRSTCA
-    0b11101100  // HALT
+    0b10001011, // SHRSTCA
+    0b11111010  // HALT
 };
 
 const uint8_t SHRSTCB_ROM[] = {
-    0b01111110, // SHRSTCB
-    0b11101100  // HALT
+    0b10001100, // SHRSTCB
+    0b11111010  // HALT
 };
 
 const uint8_t SHLAA_ROM[] = {
-    0b01111111, // SHLAA
-    0b11101100  // HALT
+    0b10001101, // SHLAA
+    0b11111010  // HALT
 };
 
 const uint8_t SHLAB_ROM[] = {
-    0b10000000, // SHLAB
-    0b11101100  // HALT
+    0b10001110, // SHLAB
+    0b11111010  // HALT
 };
 
 const uint8_t SHLBA_ROM[] = {
-    0b10000001, // SHLBA
-    0b11101100  // HALT
+    0b10001111, // SHLBA
+    0b11111010  // HALT
 };
 
 const uint8_t SHLBB_ROM[] = {
-    0b10000010, // SHLBB
-    0b11101100  // HALT
+    0b10010000, // SHLBB
+    0b11111010  // HALT
 };
 
 const uint8_t SHLMEMA_ROM[] = {
-    0b10000011, // SHLMEMA
+    0b10010001, // SHLMEMA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHLMEMB_ROM[] = {
-    0b10000100, // SHLMEMB
+    0b10010010, // SHLMEMB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHLMEZPA_ROM[] = {
-    0b10000101, // SHLMEZPA
+    0b10010011, // SHLMEZPA
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHLMEZPB_ROM[] = {
-    0b10000110, // SHLMEZPB
+    0b10010100, // SHLMEZPB
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t SHLSTCA_ROM[] = {
-    0b10000111, // SHLSTCA
-    0b11101100  // HALT
+    0b10010101, // SHLSTCA
+    0b11111010  // HALT
 };
 
 const uint8_t SHLSTCB_ROM[] = {
-    0b10001000, // SHLSTCB
-    0b11101100  // HALT
+    0b10010110, // SHLSTCB
+    0b11111010  // HALT
 };
 
 const uint8_t CMPAB_ROM[] = {
-    0b10001001, // CMPAB
-    0b11101100  // HALT
+    0b10010111, // CMPAB
+    0b11111010  // HALT
 };
 
 const uint8_t CMPBA_ROM[] = {
-    0b10001010, // CMPBA
-    0b11101100  // HALT
+    0b10011000, // CMPBA
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTHTL_ROM[] = {
-    0b10001011, // CMPMTHTL
-    0b11101100  // HALT
+    0b10011001, // CMPMTHTL
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTLTH_ROM[] = {
-    0b10001100, // CMPTLTH
-    0b11101100  // HALT
+    0b10011010, // CMPTLTH
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTHA_ROM[] = {
-    0b10001101, // CMPTHA
-    0b11101100  // HALT
+    0b10011011, // CMPTHA
+    0b11111010  // HALT
 };
 
 const uint8_t CMPATH_ROM[] = {
-    0b10001110, // CMPATH
-    0b11101100  // HALT
+    0b10011100, // CMPATH
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTHB_ROM[] = {
-    0b10001111, // CMPTHB
-    0b11101100  // HALT
+    0b10011101, // CMPTHB
+    0b11111010  // HALT
 };
 
 const uint8_t CMPBTH_ROM[] = {
-    0b10010000, // CMPBTH
-    0b11101100  // HALT
+    0b10011110, // CMPBTH
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTLA_ROM[] = {
-    0b10010001, // CMPTLA
-    0b11101100  // HALT
+    0b10011111, // CMPTLA
+    0b11111010  // HALT
 };
 
 const uint8_t CMPATL_ROM[] = {
-    0b10010010, // CMPATL
-    0b11101100  // HALT
+    0b10100000, // CMPATL
+    0b11111010  // HALT
 };
 
 const uint8_t CMPTLB_ROM[] = {
-    0b10010011, // CMPTLB
-    0b11101100  // HALT
+    0b10100001, // CMPTLB
+    0b11111010  // HALT
 };
 
 const uint8_t CMPBTL_ROM[] = {
-    0b10010100, // CMPBTL
-    0b11101100  // HALT
+    0b10100010, // CMPBTL
+    0b11111010  // HALT
 };
 
 const uint8_t CMPINTA_ROM[] = {
-    0b10010101, // CMPINTA
-    0b11101100  // HALT
+    0b10100011, // CMPINTA
+    0b11111010  // HALT
 };
 
 const uint8_t CMPAINT_ROM[] = {
-    0b10010110, // CMPAINT
-    0b11101100  // HALT
+    0b10100100, // CMPAINT
+    0b11111010  // HALT
 };
 
 const uint8_t CMPINTB_ROM[] = {
-    0b10010111, // CMPINTB
-    0b11101100  // HALT
+    0b10100101, // CMPINTB
+    0b11111010  // HALT
 };
 
 const uint8_t CMPBINT_ROM[] = {
-    0b10011000, // CMPBINT
-    0b11101100  // HALT
+    0b10100110, // CMPBINT
+    0b11111010  // HALT
 };
 
 const uint8_t CLRA_ROM[] = {
-    0b10011001, // CLRA
-    0b11101100  // HALT
+    0b10100111, // CLRA
+    0b11111010  // HALT
 };
 
 const uint8_t CLRB_ROM[] = {
-    0b10011010, // CLRB
-    0b11101100  // HALT
+    0b10101000, // CLRB
+    0b11111010  // HALT
 };
 
 const uint8_t CLRTH_ROM[] = {
-    0b10011011, // CLRTH
-    0b11101100  // HALT
+    0b10101001, // CLRTH
+    0b11111010  // HALT
 };
 
 const uint8_t CLRTL_ROM[] = {
-    0b10011100, // CLRTL
-    0b11101100  // HALT
+    0b10101010, // CLRTL
+    0b11111010  // HALT
 };
 
 const uint8_t CLRT_ROM[] = {
-    0b10011101, // CLRT
-    0b11101100  // HALT
+    0b10101011, // CLRT
+    0b11111010  // HALT
 };
 
 const uint8_t INCA_ROM[] = {
-    0b10011110, // INCA
-    0b11101100  // HALT
+    0b10101100, // INCA
+    0b11111010  // HALT
 };
 
 const uint8_t INCB_ROM[] = {
-    0b10011111, // INCB
-    0b11101100  // HALT
+    0b10101101, // INCB
+    0b11111010  // HALT
 };
 
 const uint8_t INCT_ROM[] = {
-    0b10100000, // INCT
-    0b11101100  // HALT
+    0b10101110, // INCT
+    0b11111010  // HALT
 };
 
 const uint8_t DECA_ROM[] = {
-    0b10100001, // DECA
-    0b11101100  // HALT
+    0b10101111, // DECA
+    0b11111010  // HALT
 };
 
 const uint8_t DECB_ROM[] = {
-    0b10100010, // DECB
-    0b11101100  // HALT
+    0b10110000, // DECB
+    0b11111010  // HALT
 };
 
 const uint8_t DECT_ROM[] = {
-    0b10100011, // DECT
-    0b11101100  // HALT
+    0b10110001, // DECT
+    0b11111010  // HALT
 };
 
 typedef struct {

@@ -23,303 +23,373 @@ const uint8_t ADDR_LOW_VAL = 0x34;
 
 const uint8_t MOVE_AB_ROM[] = {
     0b00000001, // MOVAB
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_ATH_ROM[] = {
     0b00000010, // MOVATH
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_ATL_ROM[] = {
     0b00000011, // MOVATL
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_AF_ROM[] = {
     0b00000100, // MOVAF
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_AINT_ROM[] = {
     0b00000101, // MOVAINT
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_BA_ROM[] = {
     0b00000110, // MOVBA
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_BTH_ROM[] = {
     0b00000111, // MOVBTH
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_BTL_ROM[] = {
     0b00001000, // MOVBTL
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_BF_ROM[] = {
     0b00001001, // MOVBF
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_BINT_ROM[] = {
     0b00001010, // MOVBINT
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_THA_ROM[] = {
     0b00001011, // MOVTHA
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_THB_ROM[] = {
     0b00001100, // MOVTHB
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_THTL_ROM[] = {
     0b00001101, // MOVTHTL
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_THF_ROM[] = {
     0b00001110, // MOVTHF
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_THINT_ROM[] = {
     0b00001111, // MOVTHINT
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_TLA_ROM[] = {
     0b00010000, // MOVTLA
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_TLB_ROM[] = {
     0b00010001, // MOVTLB
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_TLTH_ROM[] = {
     0b00010010, // MOVTLTH
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_TLF_ROM[] = {
     0b00010011, // MOVTLF
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_TLINT_ROM[] = {
     0b00010100, // MOVTLINT
-    0b11101100  // HALT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVE_AIMM_ROM[] = {
     0b00010101, // MOVAIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_BIMM_ROM[] = {
     0b00010110, // MOVBIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_THIMM_ROM[] = {
     0b00010111, // MOVTHIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_TLIMM_ROM[] = {
     0b00011000, // MOVTIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_AABS_ROM[] = {
     0b00011001, // MOVAABS
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_AABSZP_ROM[] = {
     0b00011010, // MOVAABSZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_BABS_ROM[] = {
     0b00011011, // MOVBABS
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVE_BABSZP_ROM[] = {
     0b00011100, // MOVBABSZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
+};
+
+const uint8_t MOVE_AATT_ROM[] = {
+    0b00011101, // MOVAATT
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_BATT_ROM[] = {
+    0b00011110, // MOVBATT
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_AATB_ROM[] = {
+    0b00011111, // MOVAATB
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_AATTH_ROM[] = {
+    0b00100000, // MOVAATTH
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_AATTL_ROM[] = {
+    0b00100001, // MOVAATTL
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_BATA_ROM[] = {
+    0b00100010, // MOVBATA
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_BATTH_ROM[] = {
+    0b00100011, // MOVBATTH
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_BATTL_ROM[] = {
+    0b00100100, // MOVBATTL
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_THATA_ROM[] = {
+    0b00100101, // MOVTHATA
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_THATB_ROM[] = {
+    0b00100110, // MOVTHATB
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_THATTL_ROM[] = {
+    0b00100111, // MOVTHATTL
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_TLATA_ROM[] = {
+    0b00101000, // MOVTLATA
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_TLATB_ROM[] = {
+    0b00101001, // MOVTLATB
+    0b11111010  // HALT
+};
+
+const uint8_t MOVE_TLATTH_ROM[] = {
+    0b00101010, // MOVTLATTH
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_ABSA_ROM[] = {
-    0b00011101, // MOVEAT_ABSA
+    0b00101011, // MOVEAT_ABSA
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSAZP_ROM[] = {
-    0b00011110, // MOVEAT_ABSAZP
+    0b00101100, // MOVEAT_ABSAZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSB_ROM[] = {
-    0b00011111, // MOVEAT_ABSB
+    0b00101101, // MOVEAT_ABSB
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSBZP_ROM[] = {
-    0b00100000, // MOVEAT_ABSBZP
+    0b00101110, // MOVEAT_ABSBZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSINT_ROM[] = {
-    0b00100001, // MOVEAT_ABSINT
+    0b00101111, // MOVEAT_ABSINT
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSINTZP_ROM[] = {
-    0b00100010, // MOVEAT_ABSINTZP
+    0b00110000, // MOVEAT_ABSINTZP
     ADDR_LOW_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSIMM_ROM[] = {
-    0b00100011, // MOVEAT_ABSIMM
+    0b00110001, // MOVEAT_ABSIMM
     ADDR_LOW_VAL, ADDR_HIGH_VAL, IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_ABSIMMZP_ROM[] = {
-    0b00100100, // MOVEAT_ABSIMMZP
+    0b00110010, // MOVEAT_ABSIMMZP
     ADDR_LOW_VAL, IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_TA_ROM[] = {
-    0b00100101, // MOVEAT_TA
-    0b11101100  // HALT
+    0b00110011, // MOVEAT_TA
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TB_ROM[] = {
-    0b00100110, // MOVEAT_TB
-    0b11101100  // HALT
+    0b00110100, // MOVEAT_TB
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TINT_ROM[] = {
-    0b00100111, // MOVEAT_TINT
-    0b11101100  // HALT
+    0b00110101, // MOVEAT_TINT
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_AB_ROM[] = {
-    0b00101000, // MOVEAT_AB
-    0b11101100  // HALT
+    0b00110110, // MOVEAT_AB
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_ATH_ROM[] = {
-    0b00101001, // MOVEAT_ATH
-    0b11101100  // HALT
+    0b00110111, // MOVEAT_ATH
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_ATL_ROM[] = {
-    0b00101010, // MOVEAT_ATL
-    0b11101100  // HALT
+    0b00111000, // MOVEAT_ATL
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_BA_ROM[] = {
-    0b00101011, // MOVEAT_BA
-    0b11101100  // HALT
+    0b00111001, // MOVEAT_BA
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_BTH_ROM[] = {
-    0b00101100, // MOVEAT_BTH
-    0b11101100  // HALT
+    0b00111010, // MOVEAT_BTH
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_BTL_ROM[] = {
-    0b00101101, // MOVEAT_BTL
-    0b11101100  // HALT
+    0b00111011, // MOVEAT_BTL
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_THA_ROM[] = {
-    0b00101110, // MOVEAT_THA
-    0b11101100  // HALT
+    0b00111100, // MOVEAT_THA
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_THB_ROM[] = {
-    0b00101111, // MOVEAT_THB
-    0b11101100  // HALT
+    0b00111101, // MOVEAT_THB
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_THTL_ROM[] = {
-    0b00110000, // MOVEAT_THTL
-    0b11101100  // HALT
+    0b00111110, // MOVEAT_THTL
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TLA_ROM[] = {
-    0b00110001, // MOVEAT_TLA
-    0b11101100  // HALT
+    0b00111111, // MOVEAT_TLA
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TLB_ROM[] = {
-    0b00110010, // MOVEAT_TLB
-    0b11101100  // HALT
+    0b01000000, // MOVEAT_TLB
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TLTH_ROM[] = {
-    0b00110011, // MOVEAT_TLTH
-    0b11101100  // HALT
+    0b01000001, // MOVEAT_TLTH
+    0b11111010  // HALT
 };
 
 const uint8_t MOVEAT_TIMM_ROM[] = {
-    0b00110100, // MOVEAT_TIMM
+    0b01000010, // MOVEAT_TIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_AIMM_ROM[] = {
-    0b00110101, // MOVEAT_AIMM
+    0b01000011, // MOVEAT_AIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_BIMM_ROM[] = {
-    0b00110110, // MOVEAT_BIMM
+    0b01000100, // MOVEAT_BIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_THIMM_ROM[] = {
-    0b00110111, // MOVEAT_THIMM
+    0b01000101, // MOVEAT_THIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t MOVEAT_TLIMM_ROM[] = {
-    0b00111000, // MOVEAT_TLIMM
+    0b01000110, // MOVEAT_TLIMM
     IMM_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 typedef struct {
@@ -378,6 +448,22 @@ void test_move_aabs(void);
 void test_move_aabszp(void);
 void test_move_babs(void);
 void test_move_babszp(void);
+
+void test_move_aatt(void);
+void test_move_batt(void);
+void test_move_aatb(void);
+void test_move_aatth(void);
+void test_move_aattl(void);
+void test_move_bata(void);
+void test_move_batth(void);
+void test_move_battl(void);
+void test_move_thata(void);
+void test_move_thatb(void);
+void test_move_thattl(void);
+void test_move_tlata(void);
+void test_move_tlatb(void);
+void test_move_tlatth(void);
+
 void test_moveat_absa(void);
 void test_moveat_absazp(void);
 void test_moveat_absb(void);
@@ -1041,6 +1127,338 @@ void test_move_babszp(void) {
     clear_emulator(&bundle);
 }
 
+void test_move_aatt(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_AATT_ROM, sizeof(MOVE_AATT_ROM));
+
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TMP_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TMP_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TMP_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_AATT_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_batt(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_BATT_ROM, sizeof(MOVE_BATT_ROM));
+
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TMP_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TMP_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TMP_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_BATT_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_aatb(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_AATB_ROM, sizeof(MOVE_AATB_ROM));
+
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_B_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_AATB_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_aatth(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_AATTH_ROM, sizeof(MOVE_AATTH_ROM));
+
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TH_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_AATTH_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_aattl(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_AATTL_ROM, sizeof(MOVE_AATTL_ROM));
+
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TL_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_TL_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_AATTL_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_bata(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_BATA_ROM, sizeof(MOVE_BATA_ROM));
+
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_A_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_BATA_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_batth(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_BATTH_ROM, sizeof(MOVE_BATTH_ROM));
+
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TH_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_BATTH_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_battl(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_BATTL_ROM, sizeof(MOVE_BATTL_ROM));
+
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TL_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(INIT_TL_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_BATTL_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_thata(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_THATA_ROM, sizeof(MOVE_THATA_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->memory[INIT_A_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_THATA_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_thatb(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_THATB_ROM, sizeof(MOVE_THATB_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->memory[INIT_B_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_THATB_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_thattl(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_THATTL_ROM, sizeof(MOVE_THATTL_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TL_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(INIT_TL_REG_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TL_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_THATTL_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_tlata(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_TLATA_ROM, sizeof(MOVE_TLATA_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->a_register = INIT_A_REG_VAL;
+    bundle.emulator->memory[INIT_A_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_A_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_TLATA_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_tlatb(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_TLATB_ROM, sizeof(MOVE_TLATB_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->b_register = INIT_B_REG_VAL;
+    bundle.emulator->memory[INIT_B_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_B_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_TLATB_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
+void test_move_tlatth(void) {
+    BundlePtr bundle;
+    initialize_bundle(&bundle, MOVE_TLATTH_ROM, sizeof(MOVE_TLATTH_ROM));
+
+    bundle.emulator->tmp_register_16 = INIT_TMP_REG_VAL;
+    bundle.emulator->memory[INIT_TH_REG_VAL] = IMM_VAL;
+
+    TEST_ASSERT_EQUAL(INIT_TMP_REG_VAL, bundle.emulator->tmp_register_16);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    run_emulator(&bundle);
+
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->tmp_register_8[0]);
+    TEST_ASSERT_EQUAL(INIT_TH_REG_VAL, bundle.emulator->tmp_register_8[1]);
+    TEST_ASSERT_EQUAL(IMM_VAL, bundle.emulator->memory[INIT_TH_REG_VAL]);
+
+    TEST_ASSERT_EQUAL(sizeof(MOVE_TLATTH_ROM), bundle.emulator->program_counter);
+
+    clear_emulator(&bundle);
+}
+
 void test_moveat_absa(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, MOVEAT_ABSA_ROM, sizeof(MOVEAT_ABSA_ROM));
@@ -1648,6 +2066,22 @@ int main(void) {
     RUN_TEST(test_move_aabszp);
     RUN_TEST(test_move_babs);
     RUN_TEST(test_move_babszp);
+
+    RUN_TEST(test_move_aatt);
+    RUN_TEST(test_move_batt);
+    RUN_TEST(test_move_aatb);
+    RUN_TEST(test_move_aatth);
+    RUN_TEST(test_move_aattl);
+    RUN_TEST(test_move_bata);
+    RUN_TEST(test_move_batth);
+    RUN_TEST(test_move_battl);
+    RUN_TEST(test_move_thata);
+    RUN_TEST(test_move_thatb);
+    RUN_TEST(test_move_thattl);
+    RUN_TEST(test_move_tlata);
+    RUN_TEST(test_move_tlatb);
+    RUN_TEST(test_move_tlatth);
+
     RUN_TEST(test_moveat_absa);
     RUN_TEST(test_moveat_absazp);
     RUN_TEST(test_moveat_absb);

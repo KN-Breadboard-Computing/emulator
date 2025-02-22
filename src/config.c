@@ -69,12 +69,14 @@ int load_config(Config *config, const char *const filename) {
         return 2;
     }
     while (inst != NULL) {
+        unsigned id = (unsigned)cJSON_GetNumberValue(cJSON_GetObjectItem(inst, "id"));
         int opcode = hash_instruction(cJSON_GetStringValue(cJSON_GetObjectItem(inst, "opcode")));
         char *mnemonic = cJSON_GetStringValue(cJSON_GetObjectItem(inst, "mnemonic"));
         char *flag_dependence = cJSON_GetStringValue(cJSON_GetObjectItem(inst, "depend-on-flag"));
         cJSON *operands_arr = cJSON_GetObjectItem(inst, "arguments");
         unsigned num_operands = (unsigned)cJSON_GetArraySize(operands_arr);
         config->instructions[opcode] = (Instruction *)malloc(sizeof(Instruction));
+        config->instructions[opcode]->id = id;
         config->instructions[opcode]->mnemonic = (char *)malloc(strlen(mnemonic) + 1);
         config->instructions[opcode]->num_operands = num_operands;
         strcpy(config->instructions[opcode]->mnemonic, mnemonic);

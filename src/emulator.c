@@ -141,6 +141,22 @@ static int handle_mov(Emulator *emulator, Instruction instruction) {
     return 0;
 }
 
+static int handle_movindirect(Emulator *emulator, Instruction instruction) {
+    if (instruction.num_operands != 2)
+        return 1;
+    MemPtr des_op = process_operand(emulator, instruction.operands[0]);
+    MemPtr src_op = process_operand(emulator, instruction.operands[1]);
+    if (des_op.mem16 == NULL || src_op.mem16 == NULL)
+        return 2;
+    if (src_op.is16) {
+        *des_op.mem8 = emulator->memory[*src_op.mem16];
+    } else {
+        emulator->tmp_register_8[0] = *src_op.mem8;
+        *des_op.mem8 = emulator->memory[(uint16_t)*src_op.mem8];
+    }
+    return 0;
+}
+
 static int handle_inc(Emulator *emulator, Instruction instruction) {
     if (instruction.num_operands != 1)
         return 1;
@@ -566,7 +582,11 @@ int run_instruction(Emulator *emulator, Instruction instruction) {
 #endif
     int ret = 0;
     if (!strcmp(instruction.mnemonic, "MOV")) {
-        ret = handle_mov(emulator, instruction);
+        if (instruction.id < 28) {
+            ret = handle_mov(emulator, instruction);
+        } else {
+            ret = handle_movindirect(emulator, instruction);
+        }
     } else if (!strcmp(instruction.mnemonic, "NOP")) {
         ;
     } else if (!strcmp(instruction.mnemonic, "HALT")) {

@@ -3,6 +3,7 @@
 #define INST_SET_SIZE 256
 
 typedef struct {
+    unsigned id;
     char *mnemonic;
     char **operands;
     char *flag_dependence;

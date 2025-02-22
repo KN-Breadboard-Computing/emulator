@@ -10,249 +10,249 @@ const uint8_t ADDR_LOW_VAL = 0x34;
 
 const uint8_t OFFSET_VAL = 0x44;
 
-const uint8_t HALT_MNEMONIC = 0b11101100;
+const uint8_t HALT_MNEMONIC = 0b11111010;
 
 const uint8_t JMPIMM_ROM[] = {
-    0b10100100, // JMPIMM
+    0b10110010, // JMPIMM
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMS_ROM[] = {
-    0b10100101, // JMPIMMS
+    0b10110011, // JMPIMMS
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNS_ROM[] = {
-    0b10100110, // JMPIMMNS
+    0b10110100, // JMPIMMNS
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMTS_ROM[] = {
-    0b10100111, // JMPIMMTS
-    0b11101100  // HALT
+    0b10110101, // JMPIMMTS
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMTNS_ROM[] = {
-    0b10101000, // JMPIMMTNS
-    0b11101100  // HALT
+    0b10110110, // JMPIMMTNS
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMP_ROM[] = {
-    0b10101001, // JMPIMMP
+    0b10110111, // JMPIMMP
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNP_ROM[] = {
-    0b10101010, // JMPIMMNP
+    0b10111000, // JMPIMMNP
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMTP_ROM[] = {
-    0b10101011, // JMPIMMTP
-    0b11101100  // HALT
+    0b10111001, // JMPIMMTP
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMTNP_ROM[] = {
-    0b10101100, // JMPIMMTNP
-    0b11101100  // HALT
+    0b10111010, // JMPIMMTNP
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMZ_ROM[] = {
-    0b10101101, // JMPIMMZ
+    0b10111011, // JMPIMMZ
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNZ_ROM[] = {
-    0b10101110, // JMPIMMNZ
+    0b10111100, // JMPIMMNZ
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMTZ_ROM[] = {
-    0b10101111, // JMPIMMTZ
-    0b11101100  // HALT
+    0b10111101, // JMPIMMTZ
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMTNZ_ROM[] = {
-    0b10110000, // JMPIMMTNZ
-    0b11101100  // HALT
+    0b10111110, // JMPIMMTNZ
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMC_ROM[] = {
-    0b10110001, // JMPIMMC
+    0b10111111, // JMPIMMC
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNC_ROM[] = {
-    0b10110010, // JMPIMMNC
+    0b11000000, // JMPIMMNC
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMTC_ROM[] = {
-    0b10110011, // JMPIMMTC
-    0b11101100  // HALT
+    0b11000001, // JMPIMMTC
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMTNC_ROM[] = {
-    0b10110100, // JMPIMMTNC
-    0b11101100  // HALT
+    0b11000010, // JMPIMMTNC
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMO_ROM[] = {
-    0b10110101, // JMPIMMO
+    0b11000011, // JMPIMMO
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNO_ROM[] = {
-    0b10110110, // JMPIMMNO
+    0b11000100, // JMPIMMNO
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPIMMTO_ROM[] = {
-    0b10110111, // JMPIMMTO
-    0b11101100  // HALT
+    0b11000101, // JMPIMMTO
+    0b11111010  // HALT
 };
 
 const uint8_t JMPIMMTNO_ROM[] = {
-    0b10111000, // JMPIMMTNO
-    0b11101100  // HALT
+    0b11000110, // JMPIMMTNO
+    0b11111010  // HALT
 };
 
 const uint8_t JMPREL_ROM[] = {
-    0b10111001, // JMPREL
+    0b11000111, // JMPREL
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELS_ROM[] = {
-    0b10111010, // JMPRELS
+    0b11001000, // JMPRELS
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELNS_ROM[] = {
-    0b10111011, // JMPRELNS
+    0b11001001, // JMPRELNS
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELTLS_ROM[] = {
-    0b10111100, // JMPRELTLS
-    0b11101100  // HALT
+    0b11001010, // JMPRELTLS
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELTLNS_ROM[] = {
-    0b10111101, // JMPRELTLNS
-    0b11101100  // HALT
+    0b11001011, // JMPRELTLNS
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELP_ROM[] = {
-    0b10111110, // JMPRELP
+    0b11001100, // JMPRELP
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELNP_ROM[] = {
-    0b10111111, // JMPRELNP
+    0b11001101, // JMPRELNP
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELTLP_ROM[] = {
-    0b11000000, // JMPRELTLP
-    0b11101100  // HALT
+    0b11001110, // JMPRELTLP
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELTLNP_ROM[] = {
-    0b11000001, // JMPRELTLNP
-    0b11101100  // HALT
+    0b11001111, // JMPRELTLNP
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELZ_ROM[] = {
-    0b11000010, // JMPRELZ
+    0b11010000, // JMPRELZ
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELNZ_ROM[] = {
-    0b11000011, // JMPRELNZ
+    0b11010001, // JMPRELNZ
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELTLZ_ROM[] = {
-    0b11000100, // JMPRELTLZ
-    0b11101100  // HALT
+    0b11010010, // JMPRELTLZ
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELTLNZ_ROM[] = {
-    0b11000101, // JMPRELTLNZ
-    0b11101100  // HALT
+    0b11010011, // JMPRELTLNZ
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELC_ROM[] = {
-    0b11000110, // JMPRELC
+    0b11010100, // JMPRELC
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELNC_ROM[] = {
-    0b11000111, // JMPRELNC
+    0b11010101, // JMPRELNC
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELTLC_ROM[] = {
-    0b11001000, // JMPRELTLC
-    0b11101100  // HALT
+    0b11010110, // JMPRELTLC
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELTLNC_ROM[] = {
-    0b11001001, // JMPRELTLNC
-    0b11101100  // HALT
+    0b11010111, // JMPRELTLNC
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELO_ROM[] = {
-    0b11001010, // JMPRELO
+    0b11011000, // JMPRELO
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELNO_ROM[] = {
-    0b11001011, // JMPRELNO
+    0b11011001, // JMPRELNO
     OFFSET_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRELTLO_ROM[] = {
-    0b11001100, // JMPRELTLO
-    0b11101100  // HALT
+    0b11011010, // JMPRELTLO
+    0b11111010  // HALT
 };
 
 const uint8_t JMPRELTLNO_ROM[] = {
-    0b11001101, // JMPRELTLNO
-    0b11101100  // HALT
+    0b11011011, // JMPRELTLNO
+    0b11111010  // HALT
 };
 
 const uint8_t JMPFUN_ROM[] = {
-    0b11001110, // JMPFUN
+    0b11011100, // JMPFUN
     ADDR_LOW_VAL, ADDR_HIGH_VAL,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 const uint8_t JMPRET_ROM[] = {
-    0b11001111, // JMPRET
-    0b11101100  // HALT
+    0b11011101, // JMPRET
+    0b11111010  // HALT
 };
 
 typedef struct {

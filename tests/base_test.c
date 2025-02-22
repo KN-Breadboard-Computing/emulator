@@ -12,7 +12,7 @@ const uint8_t SAMPLE_PROGRAM_ROM[] = {
     IMM_VAL1,
     0b00010110, // MOVBIMM
     IMM_VAL2,
-    0b11101100 // HALT
+    0b11111010 // HALT
 };
 
 typedef struct {
