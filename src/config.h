@@ -1,5 +1,7 @@
 #pragma once
 
+#undef CJSON_WITH_CMAKE
+
 #define INST_SET_SIZE 256
 
 typedef struct {
