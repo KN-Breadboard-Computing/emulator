@@ -69,6 +69,7 @@ typedef struct {
 typedef struct {
     bool is16;
     bool isTmp16;
+    bool isZeroPage;
 
     union {
         uint8_t *mem8;

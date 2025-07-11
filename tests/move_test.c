@@ -507,6 +507,11 @@ void initialize_bundle(BundlePtr *bundle, const uint8_t *rom, size_t rom_size) {
         emulator->memory[i] = rom[i];
     }
 
+    emulator->a_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->b_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[0] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[1] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+
     bundle->emulator = emulator;
     bundle->config = config;
     bundle->rom_size = rom_size;

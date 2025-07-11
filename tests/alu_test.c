@@ -743,6 +743,11 @@ void initialize_bundle(BundlePtr *bundle, const uint8_t *rom, size_t rom_size) {
         emulator->memory[i] = rom[i];
     }
 
+    emulator->a_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->b_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[0] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[1] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+
     bundle->emulator = emulator;
     bundle->config = config;
     bundle->rom_size = rom_size;
@@ -914,13 +919,13 @@ void test_negstca(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
-    TEST_ASSERT_EQUAL((uint8_t)-INIT_A_REG_VAL, bundle.emulator->stack[0]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)-INIT_A_REG_VAL, bundle.emulator->stack[0xFFFF]);
 
     TEST_ASSERT_EQUAL(sizeof(NEGSTCA_ROM), bundle.emulator->program_counter);
 
@@ -934,13 +939,13 @@ void test_negstcb(void) {
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
-    TEST_ASSERT_EQUAL((uint8_t)-INIT_B_REG_VAL, bundle.emulator->stack[0]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)-INIT_B_REG_VAL, bundle.emulator->stack[0xFFFF]);
 
     TEST_ASSERT_EQUAL(sizeof(NEGSTCB_ROM), bundle.emulator->program_counter);
 
@@ -1028,12 +1033,12 @@ void test_addstc(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL + INIT_B_REG_VAL), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL + INIT_B_REG_VAL), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(ADDSTC_ROM), bundle.emulator->program_counter);
 
@@ -1195,12 +1200,12 @@ void test_substcab(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL - INIT_B_REG_VAL), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL - INIT_B_REG_VAL), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SUBSTCAB_ROM), bundle.emulator->program_counter);
 
@@ -1214,12 +1219,12 @@ void test_substcba(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL - INIT_A_REG_VAL), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL - INIT_A_REG_VAL), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SUBSTCBA_ROM), bundle.emulator->program_counter);
 
@@ -1385,13 +1390,13 @@ void test_div2stca(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
     uint8_t expected = INIT_A_REG_VAL < 128 ? INIT_A_REG_VAL / 2 : INIT_A_REG_VAL / 2 + 128;
-    TEST_ASSERT_EQUAL(expected, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(expected, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(DIV2STCA_ROM), bundle.emulator->program_counter);
 
@@ -1405,13 +1410,13 @@ void test_div2stcb(void) {
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
     uint8_t expected = INIT_B_REG_VAL < 128 ? INIT_B_REG_VAL / 2 : INIT_B_REG_VAL / 2 + 128;
-    TEST_ASSERT_EQUAL(expected, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(expected, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(DIV2STCB_ROM), bundle.emulator->program_counter);
 
@@ -1569,12 +1574,12 @@ void test_invstca(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL(255 ^ INIT_A_REG_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(255 ^ INIT_A_REG_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(INVSTCA_ROM), bundle.emulator->program_counter);
 
@@ -1588,12 +1593,12 @@ void test_invstcb(void) {
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL(255 ^ INIT_B_REG_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(255 ^ INIT_B_REG_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(INVSTCB_ROM), bundle.emulator->program_counter);
 
@@ -1681,12 +1686,12 @@ void test_orstc(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL(INIT_A_REG_VAL | INIT_B_REG_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL | INIT_B_REG_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(ORSTC_ROM), bundle.emulator->program_counter);
 
@@ -1774,12 +1779,12 @@ void test_andstc(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL(INIT_A_REG_VAL & INIT_B_REG_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL & INIT_B_REG_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(ANDSTC_ROM), bundle.emulator->program_counter);
 
@@ -1867,12 +1872,12 @@ void test_xorstc(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL(INIT_A_REG_VAL ^ INIT_B_REG_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(INIT_A_REG_VAL ^ INIT_B_REG_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(XORSTC_ROM), bundle.emulator->program_counter);
 
@@ -2026,12 +2031,12 @@ void test_shrstca(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL >> 1), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL >> 1), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SHRSTCA_ROM), bundle.emulator->program_counter);
 
@@ -2045,12 +2050,12 @@ void test_shrstcb(void) {
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL >> 1), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL >> 1), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SHRSTCB_ROM), bundle.emulator->program_counter);
 
@@ -2204,12 +2209,12 @@ void test_shlstca(void) {
     bundle.emulator->a_register = INIT_A_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL << 1), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_A_REG_VAL << 1), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SHLSTCA_ROM), bundle.emulator->program_counter);
 
@@ -2223,12 +2228,12 @@ void test_shlstcb(void) {
     bundle.emulator->b_register = INIT_B_REG_VAL;
 
     TEST_ASSERT_EQUAL(INIT_B_REG_VAL, bundle.emulator->b_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
-    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL << 1), bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(1, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL((uint8_t)(INIT_B_REG_VAL << 1), bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0xFFFE, bundle.emulator->stack_pointer);
 
     TEST_ASSERT_EQUAL(sizeof(SHLSTCB_ROM), bundle.emulator->program_counter);
 

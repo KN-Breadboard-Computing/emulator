@@ -131,6 +131,11 @@ void initialize_bundle(BundlePtr *bundle, const uint8_t *rom, size_t rom_size) {
         emulator->memory[i] = rom[i];
     }
 
+    emulator->a_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->b_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[0] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[1] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+
     bundle->emulator = emulator;
     bundle->config = config;
     bundle->rom_size = rom_size;
@@ -175,9 +180,6 @@ void test_skip1(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, SKIP1_ROM, sizeof(SKIP1_ROM));
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->b_register);
-
     run_emulator(&bundle);
 
     TEST_ASSERT_EQUAL(INIT_A_REG_VAL, bundle.emulator->a_register);
@@ -191,9 +193,6 @@ void test_skip1(void) {
 void test_skip2(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, SKIP2_ROM, sizeof(SKIP2_ROM));
-
-    TEST_ASSERT_EQUAL(0, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->b_register);
 
     run_emulator(&bundle);
 

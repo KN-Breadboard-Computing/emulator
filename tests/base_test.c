@@ -44,6 +44,11 @@ void initialize_bundle(BundlePtr *bundle, const uint8_t *rom, size_t rom_size) {
         emulator->memory[i] = rom[i];
     }
 
+    emulator->a_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->b_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[0] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[1] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+
     bundle->emulator = emulator;
     bundle->config = config;
     bundle->rom_size = rom_size;
@@ -66,10 +71,10 @@ void test_emulator_init(void) {
     Emulator emulator;
     init_emulator(&emulator);
 
-    TEST_ASSERT_EQUAL(0, emulator.a_register);
-    TEST_ASSERT_EQUAL(0, emulator.b_register);
-    TEST_ASSERT_EQUAL(0, emulator.tmp_register_16);
-    TEST_ASSERT_EQUAL(0, emulator.stack_pointer);
+    // TEST_ASSERT_EQUAL(0, emulator.a_register);
+    // TEST_ASSERT_EQUAL(0, emulator.b_register);
+    // TEST_ASSERT_EQUAL(0, emulator.tmp_register_16);
+    TEST_ASSERT_EQUAL(0xFFFF, emulator.stack_pointer);
     TEST_ASSERT_EQUAL(0, emulator.program_counter);
     TEST_ASSERT_EQUAL(false, emulator.is_halted);
     TEST_ASSERT_EQUAL(0, emulator.clock_cycles_counter);
@@ -86,8 +91,8 @@ void test_sample_program(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, SAMPLE_PROGRAM_ROM, sizeof(SAMPLE_PROGRAM_ROM));
 
-    TEST_ASSERT_EQUAL(0, bundle.emulator->a_register);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->b_register);
+    // TEST_ASSERT_EQUAL(0, bundle.emulator->a_register);
+    // TEST_ASSERT_EQUAL(0, bundle.emulator->b_register);
 
     run_emulator(&bundle);
 

@@ -347,6 +347,11 @@ void initialize_bundle(BundlePtr *bundle, const uint8_t *rom, size_t rom_size) {
         emulator->memory[i] = rom[i];
     }
 
+    emulator->a_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->b_register = (uint8_t)(rand() % 250 + 5);        // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[0] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+    emulator->tmp_register_8[1] = (uint8_t)(rand() % 250 + 5); // Random initial value for testing avoiding zero
+
     bundle->emulator = emulator;
     bundle->config = config;
     bundle->rom_size = rom_size;
@@ -1358,14 +1363,14 @@ void test_jmpfun(void) {
     bundle.emulator->memory[ADDR_VAL] = HALT_MNEMONIC;
 
     TEST_ASSERT_EQUAL(0, bundle.emulator->program_counter);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     run_emulator(&bundle);
 
     TEST_ASSERT_EQUAL(ADDR_VAL, bundle.emulator->program_counter);
-    TEST_ASSERT_EQUAL(2, bundle.emulator->stack_pointer);
-    TEST_ASSERT_EQUAL(3, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack[1]);
+    TEST_ASSERT_EQUAL(0xFFFD, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(3, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(0, bundle.emulator->stack[0XFFFE]);
 
     clear_emulator(&bundle);
 }
@@ -1374,19 +1379,19 @@ void test_jmpret(void) {
     BundlePtr bundle;
     initialize_bundle(&bundle, JMPRET_ROM, sizeof(JMPRET_ROM));
 
-    bundle.emulator->stack_pointer = 2;
-    bundle.emulator->stack[0] = ADDR_LOW_VAL;
-    bundle.emulator->stack[1] = ADDR_HIGH_VAL;
+    bundle.emulator->stack_pointer = 0xFFFD;
+    bundle.emulator->stack[0xFFFF] = ADDR_LOW_VAL;
+    bundle.emulator->stack[0xFFFE] = ADDR_HIGH_VAL;
     bundle.emulator->memory[ADDR_VAL + 1] = HALT_MNEMONIC;
 
-    TEST_ASSERT_EQUAL(2, bundle.emulator->stack_pointer);
-    TEST_ASSERT_EQUAL(ADDR_LOW_VAL, bundle.emulator->stack[0]);
-    TEST_ASSERT_EQUAL(ADDR_HIGH_VAL, bundle.emulator->stack[1]);
+    TEST_ASSERT_EQUAL(0xFFFD, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(ADDR_LOW_VAL, bundle.emulator->stack[0xFFFF]);
+    TEST_ASSERT_EQUAL(ADDR_HIGH_VAL, bundle.emulator->stack[0xFFFE]);
 
     run_emulator(&bundle);
 
     TEST_ASSERT_EQUAL(ADDR_VAL, bundle.emulator->program_counter);
-    TEST_ASSERT_EQUAL(0, bundle.emulator->stack_pointer);
+    TEST_ASSERT_EQUAL(0xFFFF, bundle.emulator->stack_pointer);
 
     clear_emulator(&bundle);
 }

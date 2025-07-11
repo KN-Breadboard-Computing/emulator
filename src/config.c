@@ -1,9 +1,9 @@
 #include "config.h"
 
 #ifdef CJSON_WITH_CMAKE
-    #include <cJSON.h>
+#include <cJSON.h>
 #else
-    #include "cJSON.h"
+#include "cJSON.h"
 #endif
 
 #include <stdio.h>
@@ -54,7 +54,7 @@ int load_config(Config *config, const char *const filename) {
     fseek(config_file, 0, SEEK_END);
     length = (unsigned)ftell(config_file);
     fseek(config_file, 0, SEEK_SET);
-    buffer = (char*)malloc(length);
+    buffer = (char *)malloc(length);
     if (buffer)
         fread(buffer, 1, length, config_file);
     fclose(config_file);
