@@ -147,7 +147,7 @@ const uint8_t MOVE_TLIMM_ROM[] = {
 
 const uint8_t MOVE_AABS_ROM[] = {
     0b00011001, // MOVAABS
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -159,7 +159,7 @@ const uint8_t MOVE_AABSZP_ROM[] = {
 
 const uint8_t MOVE_BABS_ROM[] = {
     0b00011011, // MOVBABS
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -241,7 +241,7 @@ const uint8_t MOVE_TLATTH_ROM[] = {
 
 const uint8_t MOVEAT_ABSA_ROM[] = {
     0b00101011, // MOVEAT_ABSA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -253,7 +253,7 @@ const uint8_t MOVEAT_ABSAZP_ROM[] = {
 
 const uint8_t MOVEAT_ABSB_ROM[] = {
     0b00101101, // MOVEAT_ABSB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -265,7 +265,7 @@ const uint8_t MOVEAT_ABSBZP_ROM[] = {
 
 const uint8_t MOVEAT_ABSINT_ROM[] = {
     0b00101111, // MOVEAT_ABSINT
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -277,7 +277,7 @@ const uint8_t MOVEAT_ABSINTZP_ROM[] = {
 
 const uint8_t MOVEAT_ABSIMM_ROM[] = {
     0b00110001, // MOVEAT_ABSIMM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL, IMM_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL, IMM_VAL,
     0b11111010 // HALT
 };
 

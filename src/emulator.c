@@ -96,8 +96,8 @@ static MemPtr process_operand(Emulator *emulator, const char *operand) {
         ret.is16 = true;
         ret.mem16 = &emulator->tmp_register_16;
     } else if ((!strcmp(operand, "MEM16")) || (!strcmp(operand, "MEM"))) {
-        emulator->tmp_register_8[0] = *fetch_next_byte(emulator);
         emulator->tmp_register_8[1] = *fetch_next_byte(emulator);
+        emulator->tmp_register_8[0] = *fetch_next_byte(emulator);
         ret.is16 = true;
         ret.mem16 = &emulator->tmp_register_16;
     } else if (!strcmp(operand, "F")) {

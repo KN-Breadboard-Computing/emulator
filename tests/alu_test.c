@@ -40,13 +40,13 @@ const uint8_t NEGBB_ROM[] = {
 
 const uint8_t NEGMEMA_ROM[] = {
     0b01001011, // NEGMEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t NEGMEMB_ROM[] = {
     0b01001100, // NEGMEMB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -84,7 +84,7 @@ const uint8_t ADDB_ROM[] = {
 
 const uint8_t ADDMEM_ROM[] = {
     0b01010011, // ADDMEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -121,13 +121,13 @@ const uint8_t SUBBBA_ROM[] = {
 
 const uint8_t SUBMEMAB_ROM[] = {
     0b01011010, // SUBMEMAB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t SUBMEMBA_ROM[] = {
     0b01011011, // SUBMEMBA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -175,13 +175,13 @@ const uint8_t DIV2BB_ROM[] = {
 
 const uint8_t DIV2MEMA_ROM[] = {
     0b01100100, // DIV2MEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t DIV2MEMB_ROM[] = {
     0b01100101, // DIV2MEMB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -229,13 +229,13 @@ const uint8_t INVBB_ROM[] = {
 
 const uint8_t INVMEMA_ROM[] = {
     0b01101110, // INVMEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t INVMEMB_ROM[] = {
     0b01101111, // INVMEMB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -273,7 +273,7 @@ const uint8_t ORAB_ROM[] = {
 
 const uint8_t ORMEM_ROM[] = {
     0b01110110, // ORMEM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -300,7 +300,7 @@ const uint8_t ANDB_ROM[] = {
 
 const uint8_t ANDMEM_ROM[] = {
     0b01111011, // ANDMEM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -327,7 +327,7 @@ const uint8_t XORB_ROM[] = {
 
 const uint8_t XORMEM_ROM[] = {
     0b10000000, // XORMEM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -364,13 +364,13 @@ const uint8_t SHRBB_ROM[] = {
 
 const uint8_t SHRMEMA_ROM[] = {
     0b10000111, // SHRMEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t SHRMEMB_ROM[] = {
     0b10001000, // SHRMEMB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -418,13 +418,13 @@ const uint8_t SHLBB_ROM[] = {
 
 const uint8_t SHLMEMA_ROM[] = {
     0b10010001, // SHLMEMA
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t SHLMEMB_ROM[] = {
     0b10010010, // SHLMEMB
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 

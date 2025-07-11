@@ -14,19 +14,19 @@ const uint8_t HALT_MNEMONIC = 0b11111010;
 
 const uint8_t JMPIMM_ROM[] = {
     0b10110010, // JMPIMM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMS_ROM[] = {
     0b10110011, // JMPIMMS
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNS_ROM[] = {
     0b10110100, // JMPIMMNS
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -42,13 +42,13 @@ const uint8_t JMPIMMTNS_ROM[] = {
 
 const uint8_t JMPIMMP_ROM[] = {
     0b10110111, // JMPIMMP
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNP_ROM[] = {
     0b10111000, // JMPIMMNP
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -64,13 +64,13 @@ const uint8_t JMPIMMTNP_ROM[] = {
 
 const uint8_t JMPIMMZ_ROM[] = {
     0b10111011, // JMPIMMZ
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNZ_ROM[] = {
     0b10111100, // JMPIMMNZ
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -86,13 +86,13 @@ const uint8_t JMPIMMTNZ_ROM[] = {
 
 const uint8_t JMPIMMC_ROM[] = {
     0b10111111, // JMPIMMC
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNC_ROM[] = {
     0b11000000, // JMPIMMNC
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -108,13 +108,13 @@ const uint8_t JMPIMMTNC_ROM[] = {
 
 const uint8_t JMPIMMO_ROM[] = {
     0b11000011, // JMPIMMO
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
 const uint8_t JMPIMMNO_ROM[] = {
     0b11000100, // JMPIMMNO
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -246,7 +246,7 @@ const uint8_t JMPRELTLNO_ROM[] = {
 
 const uint8_t JMPFUN_ROM[] = {
     0b11011100, // JMPFUN
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 

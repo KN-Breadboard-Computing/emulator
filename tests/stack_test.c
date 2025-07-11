@@ -64,7 +64,7 @@ const uint8_t PUSHIMM_ROM[] = {
 
 const uint8_t PUSHABS_ROM[] = {
     0b11100110, // PUSHABS
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
@@ -101,7 +101,7 @@ const uint8_t POPT_ROM[] = {
 
 const uint8_t POPMEM_ROM[] = {
     0b11101101, // POPMEM
-    ADDR_LOW_VAL, ADDR_HIGH_VAL,
+    ADDR_HIGH_VAL, ADDR_LOW_VAL,
     0b11111010 // HALT
 };
 
